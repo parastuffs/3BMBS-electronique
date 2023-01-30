@@ -113,11 +113,11 @@ Vous manipulerez ensuite un circuit 555 afin de générer un signal carré péri
 \begin{center}
 	\begin{tabular}{p{0.2\textwidth}rlp{0.1\textwidth}}
 		Composant & \multicolumn{2}{c}{Valeur} & Quantité \\\toprule
-		\multirow{1}{*}{LM358} &  & & x1 \\\midrule
+		\multirow{1}{*}{AOP} & LM358 & & x1 \\\midrule
 		\multirow{1}{*}{Diode} & 1N4148 & & x2 \\\midrule
-		\multirow{1}{*}{Résistance} 	& 1 & k$\Omega$ & x1 \\\midrule
+		\multirow{1}{*}{Résistance} 	& 1 & k$\Omega$ & x3 \\\midrule
 		\multirow{1}{*}{Résistance} 	& 10 & k$\Omega$ & x1 \\\midrule
-		\multirow{1}{*}{Résistance} 	& 47 & k$\Omega$ & x1 \\\midrule
+		\multirow{1}{*}{Résistance} 	& 4.7 & k$\Omega$ & x1 \\\midrule
 		\multirow{1}{*}{Résistance} 	& 39 & k$\Omega$ & x1 \\\midrule
 		\multirow{1}{*}{Résistance} 	& 1 & M$\Omega$ & x1 \\\midrule
 		\multirow{1}{*}{Condensateur} 	& 10 & nF & x2 \\\midrule
@@ -128,18 +128,18 @@ Vous manipulerez ensuite un circuit 555 afin de générer un signal carré péri
 
 \section{Redresseur de précision (45 minutes)}
 La diode peut être utilisée pour réaliser un redresseur de tension simple ou double alternance.
-Dans le premier cas, seules les alternances \textit{positives} du signal sont conservée, tandis que dans le deuxième cas, les alternances négatives sont inversées afin d'être positives à leur tour.
+Dans le premier cas, seules les alternances \textit{positives} du signal sont conservées, tandis que dans le deuxième cas, les alternances négatives sont inversées afin d'être positives à leur tour.
 Ce type de circuit est généralement utilisé lorsqu'on souhaite convertir une tension alternative en une tension continue, par exemple dans une alimentation.
 
 Il est possible d'améliorer le montage en lui adjoignant un amplificateur opérationnel (AOP).
 \begin{center}
-	\includegraphics[width=.7\textwidth]{precision-rectifier.pdf}
+	\includegraphics[width=.5\textwidth]{precision-rectifier.pdf}
 \end{center}
 
 
 \Question{
 Réalisez le montage redresseur simple alternance de précision.
-Utilisez un AOP LM358, une diode 1N4148 et une résistance $R_1 = 1 k\Omega$.
+Utilisez un AOP LM358, une diode 1N4148 et une résistance $R_L = 1 k\Omega$.
 Quel signal d'entrée allez-vous utiliser ?
 Comment allez-vous alimenter l'AOP ?
 
@@ -173,7 +173,7 @@ Les alternances négatives sont redressées et amplifiées.
 }
 
 \Question{
-Réalisez le montage en utilisant une résistance $R_2$ de $10 k\Omega$ et une résistance $R_1$ de $1 k\Omega$. Quel gain observez-vous ?
+Réalisez le montage en utilisant une résistance $R_2$ de $10 k\Omega$ et une résistance $R_1$ de $1 k\Omega$ et $R_L$ de $1 k\Omega$. Quel gain observez-vous ?
 }
 {
 -10.
@@ -186,7 +186,7 @@ En profitant du fait qu'on a deux AOP dans un seul package de LM358, on peut fac
 \end{center}
 
 \Question{
-Réalisez le montage et observez la forme de la tension de sortie.
+Réalisez le montage en utilisant des résistances de $1 k\Omega$ et observez la forme de la tension de sortie.
 }
 {
 
@@ -230,20 +230,20 @@ L'application de cette manipulation consiste à doubler la tension continue util
 \Question{
 Sur base de la datasheet du timer et des composants présents dans le schéma :
 \begin{itemize}
-    \item Calculer et représenter graphiquement la période du signal carré qui sera produit par le NE555 pour une tension Vin de 5V (Pin 4 \& 8)
+    \item Calculer et représenter graphiquement la période du signal carré qui sera produit par le 555 pour une tension Vin de 5V (Pin 4 \& 8)
     \item Définir le comportement global du circuit
-    \item Exprimer Vr (la tension aux bornes de la résistance) en fonction de la tension d'entrée \footnote{Allez-vous obtenir 10 V en sortie ?}. 
+    \item Exprimer $V_r$ (la tension aux bornes de la résistance) en fonction de la tension d'alimentation de 5 V \footnote{Allez-vous obtenir 10 V en sortie ?}. 
 \end{itemize}
 }{
 Réponse attendue : relation globale du doubleur de tension et de ses pertes, notamment dues à la tension de seuil des diodes.
 En utilisant des diodes Shottky (par exemple 1N5817), on atteint quasiment 10 V en sortie.
 
-$V_r = 2 \times V_{in} - 2 \times V_{th} - V_{perte NE555}$
+$V_r = 2 \times V_{in} - 2 \times V_{th} - V_{perte SE555}$
 }
 
 
 \subsection*{Manipulations}
-Dans un premier temps, vous allez réaliser sur breadboard le schéma de la Figure \ref{NE555} avec une tension Vin de 5V. 
+Dans un premier temps, vous allez réaliser sur breadboard le schéma de la Figure \ref{NE555} avec une tension d'alimentation de 5V. 
 
 \begin{figure}[ht]
 \centering
