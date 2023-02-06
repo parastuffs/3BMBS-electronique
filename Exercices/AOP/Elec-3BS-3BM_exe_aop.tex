@@ -1,0 +1,671 @@
+\documentclass{../../template/tp}
+\usepackage[utf8x]{inputenc}
+
+\usepackage[frenchb]{babel}
+\usepackage[T1]{fontenc}
+
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{wasysym} %smiley
+\usepackage{hyperref}% hyperliens
+\usepackage{tikz}
+\usetikzlibrary{babel,positioning,calc}
+\usepackage[]{circuitikz}
+\usepackage{textcomp}
+% \usepackage{minted}
+\usepackage[long]{datetime}
+\usepackage{gensymb} % \ohm, celsius
+\usepackage{framed}
+\usepackage{pdfpages}
+\usepackage{todonotes}
+\usepackage{enumitem}
+\usepackage{ marvosym }
+\usepackage{fancyhdr}
+\usepackage{mathastext} % math as standfard text : units are respecting typography conventions.
+\usepackage{siunitx}
+\usepackage{tabularx}
+
+\newcommand{\version}{1.0.0}
+
+% \langexam{frenchb}
+
+\newboolean{koriG}
+\ifx\koriG\undefined
+\correction{false}
+\else
+\correction{true}
+\fi
+
+% \correction{false}
+% \correction{true}
+
+%% fancy header & foot
+\pagestyle{fancy}
+\lhead{[EL3T] Électronique appliquée\\ Exercices : AOP\ifthenelse{\boolean{corrige}}{~-- Corrigé}{}}
+\rhead{v\version\\ page \thepage}
+\cfoot{}
+%%
+
+\pdfinfo{
+/Author (GEI)
+/ModDate (D:\pdfdate)
+
+}
+\hypersetup{
+pdfauthor={GEI},
+pdfsubject={AOP}
+}
+
+\newcommand{\itgv}[1]{\ifthenelse{\boolean{corrige}}{\color{blue}#1}{}} %si corrigé vrai...
+\newcommand{\ifgv}[1]{\ifthenelse{\boolean{corrige}}{}{#1}} %si corrigé faux...
+
+\setlength{\parskip}{0.4cm plus4mm minus1mm} %espacement entre §
+\setlength{\parindent}{0pt}
+
+\author{GEI}
+
+\begin{document}
+
+\tptitle{}{Exercices : Amplificateurs opérationnels}
+
+Cette séance d'exercices comprend des exercices de deux types : tout d'abord des montages à amplificateurs opérationnels \textit{idéaux} et ensuite des montages avec des AOP \textit{réels} devant prendre en compte leurs limitations et imperfections.
+
+Entraînez-vous bien sur les deux types d'exercices !
+
+\section{AOP idéaux}
+
+\Question{%Storey 5th, 15.16, ampli non-inverseur
+
+    Déterminez le gain en tension du montage amplificateur suivant~:
+    \begin{center}
+        \includegraphics[scale=1.4]{non-inverseur-storey-15-16}
+    \end{center}
+    % \vspace*{-2cm}
+    % \marginpar{\qrcode[hyperlink,height=0.5in]{https://easyeda.com/editor\#id=dvL4aBM6E}}
+    % \vspace*{2cm}
+}
+{
+    Gain du montage non-inverseur~: $ 1 + \frac{25 k\Omega}{5 k\Omega} = 6$.
+}
+
+
+\Question{%Ex labo 2, 2.2
+
+    Résolvez le circuit suivant~:
+    \begin{center}
+        \includegraphics[scale=1.4]{inverseur-charge}
+    \end{center}
+    % \vspace*{-2cm}
+    % \marginpar{\qrcode[hyperlink,height=0.5in]{https://easyeda.com/editor\#id=Z0SE3MLTt}}
+    % \vspace*{2cm}
+
+
+    \begin{enumerate}[label=\alph*)]
+        \item Avec $R_1 = 1 k\ohm$, $R_2 = 10 k\ohm$, $R3 = 1 k\ohm$ et $V_{in} = 2 V \cdot sin(2 \cdot \pi \cdot 1000 \cdot t)$
+        \item Avec $R_1 = 1 k\ohm$, $R_2 = 10 k\ohm$, $R3 = 20 k\ohm$ et $V_{in} = 2 V \cdot sin(2 \cdot \pi \cdot 1000 \cdot t)$
+    \end{enumerate}
+}
+{
+    En résolvant le circuit à l'aide du zéro virtuel, il apparaît que la résistance n'a aucune influence sur le gain.
+    On trouve donc $V_{o} = - \frac{R_2}{R_1} \cdot V_{in}$.
+
+    Cependant, le principe du zéro virtuel n'est valable que lorsque l'ampli-op ne sature pas.
+    Lorsque ce dernier sature sur son alimentation positive (de 12~V dans notre cas), le circuit devient le suivant~:
+    \begin{center}
+        \includegraphics[scale=1.4]{inverseur-charge-saturation.pdf}
+    \end{center}
+
+    En considérant la maille complète, on peut trouver le courant y circulant :
+    \begin{align*}
+    V_{in} & = i \cdot R_1 + i \cdot R_2 + i \cdot R_3 + 12\\
+    \Leftrightarrow i & = \frac{V_{in} - 12}{R_1 + R_2 + R_ 3}
+    \end{align*}
+
+    En ne prenant que la maille entre la source d'alimentation continue et la sortie $V_o$, on trouve~:
+    \begin{align*}
+    V_o & = 12 + i \cdot R_3 \\
+    & = 12 + (V_{in} - 12) \cdot \frac{R_3}{R_1 + R_2 + R_ 3}
+    \end{align*}
+
+    Pour $R_3 = 20 k\Omega$, on obtient le résultat suivant~:
+
+    \begin{center}
+        \includegraphics[width=\textwidth]{inverseur-charge-saturation-waveform.pdf}
+    \end{center}
+}
+
+\Question{%Ex labo 2, 2.1
+
+    Résolvez le circuit suivant~:
+
+    \begin{center}
+        \includegraphics[scale=1.4]{non-inverseur-charge}
+    \end{center}
+    % \vspace*{-2cm}
+    % \marginpar{\qrcode[hyperlink,height=0.5in]{https://easyeda.com/editor\#id=rS5UEofWa}}
+    % \vspace*{2cm}
+
+    Avec $R_1 = 1 k\ohm$, $R_2 = 5 k\ohm$, $R_3 = 1 k\ohm$ et $V_{in} = 500 mV \cdot sin(2 \cdot \pi \cdot 1000 \cdot t)$
+}
+{
+    En utilisant le principe du zéro virtuel, on trouve que $R_3$ n'a aucune influence sur le gain du montage (et la tension de sortie en particulier)~: $V_o = (1+ \frac{R_1}{R_2}) \cdot V_{in}$.
+
+    L'influence de $R_3$ s'applique sur l'intensité du courant sortant de l'ampli-op~: $i_3 = \frac{V_o}{R_3}$.
+}
+
+\Question{%Ex labo 2, 2.3
+
+    Soit les montages suivants~:
+
+    \begin{minipage}{0.5\linewidth}
+        \begin{center}
+            \includegraphics[scale=1.4]{suiveur-pur.pdf}
+        \end{center}
+    \end{minipage}
+    \begin{minipage}{0.45\linewidth}
+        \begin{center}
+            \includegraphics[scale=1.4]{suiveur-retroaction.pdf}
+        \end{center}
+    \end{minipage}
+    % \vspace*{-4cm}
+    % \marginpar{\qrcode[hyperlink,height=0.5in]{https://easyeda.com/editor\#id=31d6FpQne}}
+    % \vspace*{4cm}
+    % \vspace*{-2cm}
+    % \marginpar{\qrcode[hyperlink,height=0.5in]{https://easyeda.com/editor\#id=ME1lkDiHD}}
+    % \vspace*{2cm}
+
+    \begin{enumerate}
+        \item Calculez le gain en tension.
+        \item Quelle est l'utilité de ce genre de montage~?
+        \item Pour illuster votre réponse, on souhaite connecter les deux blocs suivants~:
+        \begin{center}
+            \includegraphics[scale=1.4]{montage-pour-suiveur.pdf}
+        \end{center}
+        % \vspace*{-2cm}
+        % \marginpar{\qrcode[hyperlink,height=0.5in]{https://easyeda.com/editor\#id=TrtMXgD0G}}
+        % \vspace*{2cm}
+
+        Calculez $V_1$~:
+        \begin{itemize}
+            \item en connectant directement les deux blocs~;
+            \item en insérant un des deux montages ci-dessus entre les deux blocs.
+        \end{itemize}
+    \end{enumerate}
+}
+{
+    \begin{enumerate}
+        \item Calculez le gain en tension.
+        \begin{enumerate}[label=\alph*)]
+            \item Par le principe du zéro virtuel, on a $V_{in} = V_+ = V_- = V_o$, le gain vaut donc 1.
+            \item Avec le sempiternel zéro virtuel, on a $V_{in} = V_+ = V_-$. Puisque la résistance d'entrée de l'ampli-op est infinie, le courant circulant dans la branche de rétroaction est nul. Il n'y a donc pas de chute de tension dans la résistance et $V_o = V_- = V_{in}$. Le gain vaut aussi 1.
+        \end{enumerate}
+
+        \item Ce genre de montage, qu'on appelle « suiveur », sert à l'adaptation d'impédance.
+
+        \item Illustrons son utilité.
+        \begin{itemize}
+            \item En connectant directemet les deux blocs, on obtient un simple diviseur résistif~: $V_1 = \frac{1k\Omega}{1k\Omega+1k\Omega} \cdot V_{in} = \frac{1}{2}\cdot V_{in}$, ce qui donne un gain de $0.5$.
+
+            \item En insérant un suiveur entre les deux blocs, on crée le montage suivant~:
+            \begin{center}
+                \includegraphics[scale=1.4]{suiveur-adaptation-impedance.pdf}
+            \end{center}
+
+            Le gain du montage est toujours de 1 et on retrouve bien la tension d'entrée à la sortie.
+        \end{itemize}
+        \item %Ajout d'une résistance dans la boucle de rétroaction\\
+        L'ajout d'une résistance dans la boucle de rétroaction permet d'équilibrer les courants de polarisation des entrées $+$ et $-$ de l'ampli, en supposant que l'impédance de sortie de la source soit du même ordre de grandeur. Ceci permet d'améliorer les performances de l'amplificateur en diminuant l'influence du courant de polarisation sur la tension de sortie mais aussi de simplifier la réalisation du circuit. Ces considérations dépassent le cadre de ce cours.
+    \end{enumerate}
+}
+
+
+
+\Question{%Storey 5th, 16.14, superposition
+
+    Déterminez l'expression de la tension de sortie $V_o$ des circuits suivants en fonction des entrées $V_1$ et $V_2$.
+    Déduisez-en la valeur de la tension de sortie si $V_1 = 1 V$ et $V_2 = 0.5 V$.
+
+    \begin{minipage}{0.5\linewidth}
+        \begin{center}
+            \includegraphics[scale=1.4]{storey-16-14.pdf}
+        \end{center}
+    \end{minipage}
+    \begin{minipage}{0.45\linewidth}
+        \begin{center}
+            \includegraphics[scale=1.4]{storey-16-15.pdf}
+        \end{center}
+    \end{minipage}
+    % \vspace*{-4cm}
+    % \marginpar{\qrcode[hyperlink,height=0.5in]{https://easyeda.com/editor\#id=XIM1U0HNJ}}
+    % \vspace*{4cm}
+    % \vspace*{-2cm}
+    % \marginpar{\qrcode[hyperlink,height=0.5in]{https://easyeda.com/editor\#id=lsYCysvF8}}
+    % \vspace*{2cm}
+}
+{
+    % Je n'aime pas du tout la résolution de Storey, il fait tout d'un coup comme un bourrin. Je préfère le faire par superposition.
+    \begin{enumerate}[label=\alph*)]
+        \item Le système étant linéaire, nous allons procéder par superposition en nous occupant de $V_1$ et $V_2$ séparément.
+        \begin{itemize}
+            \item Considérons d'abord uniquement $V_1$ et en remplaçant $V_2$ par un court-circuit.
+            On peut remplacer le groupe $V_1$, $R_3$ et $R_4$ par son équivalent de Thévenin~: $V_{th} = \frac{R_3}{R_3 + R_4} \cdot V_1$.
+            Il n'est pas nécessaire de s'intéresser à la résistance équivalent de Thévenin car elle n'occasionnera aucune chute de tension étant donné qu'aucun courant ne rentre dana l'ampli-op.
+            On a donc un simple montage non-inverseur, ce qui donne $V_o = (1+\frac{R_1}{R_2}) \cdot V_{th}$.
+
+            \item Considérons à présent la réciproque en remplaçant $V_1$ par un court-circuit.
+            Les résistances à l'entrée non-inverseuse peuvent à nouveau être ignorées, ce qui nous donne un montage inverseur classique :
+            $V_o = -\frac{R_1}{R_2} \cdot V_2$
+        \end{itemize}
+
+        Il ne nous reste plus qu'à superposer les deux solutions en les additionnant~:
+        \begin{align*}
+        V_o & = (1+\frac{R_1}{R_2}) \cdot V_{th} - \frac{R_1}{R_2} \cdot V_2 \\
+        & = (1+\frac{R_1}{R_2}) \cdot \frac{R_3}{R_3 + R_4} \cdot V_1 - \frac{R_1}{R_2} \cdot V_2 \\
+        & = (1+\frac{10k}{5k}) \cdot \frac{10k}{10k + 1k} \cdot V_1 - \frac{10k}{5k} \cdot V_2 \\
+        & = 2.73 \cdot V_1 - 2 \cdot V_2 \\
+        & = 1.73 V
+        \end{align*}
+
+        \item En utilisant le théorème de superposition, on peut séparer le montage en deux sous-montages inverseurs en remplaçant alternativement $V_1$ puis $V_2$ par un court-circuit.
+        On trouve alors 
+        \begin{align*}
+        V_o & = -\frac{R_1}{R_2} \cdot V_1 - \frac{R_1}{R_3} \cdot V_2 \\
+        & = - 2.5 \cdot V_1 - 5 \cdot V_2 \\
+        & = -5V
+        \end{align*}
+    \end{enumerate}
+}
+
+
+\Question{%Ex labo 2, janvier 2005
+
+    \begin{center}
+        \includegraphics[scale=1.4]{cascade.pdf}
+    \end{center}
+    % \vspace*{-4cm}
+    % \marginpar{\qrcode[hyperlink,height=0.5in]{https://easyeda.com/editor\#id=FjN7mxG21}}
+    % \vspace*{4cm}
+
+    On considère le montage ci-dessus pour lequel~:
+    \begin{itemize}
+        \item $V_{in} = 50 mV \cdot \sin(2\cdot \pi \cdot 50 t)$
+        \item $I_1 = 1 \mu A$
+        \item À la fréquence de la source de tension, la capacité $C$ peut être considérée comme un court-circuit.
+    \end{itemize}
+
+    \begin{enumerate}
+        \item Calculez les composantes continue et alternative de la tension $V_{out}$.
+        \item Indiquez l'utilité du premier étage à ampli-op.
+    \end{enumerate}
+}
+{
+    \begin{enumerate}
+        \item Nous allons procéder par étage et par superposition lorsque nécessaire.
+        \begin{itemize}
+            \item Commençons par le premier étage dont la sortie est prise juste après le premier ampli-op.
+            Nous avons un simple suiveur, la sortie reprend la valeur de l'entrée.
+
+            \item Le deuxième étage comprend deux sources que nous allons étudier séparément avant de les superposer.
+            \begin{enumerate}[label=\alph*)]
+                \item Sortie due à $V_{in}$~: $-4 \cdot V_{in}$ (montage inverseur).
+                \item Sortie due à la source de courant~: la source de tension équivalente par Thévenin est $V_{th} = I_1 \cdot 1k = 1 mV$.
+                Cette source équivalente passe dans un montage non-inverseur de gain 5, la sortie vaut 5~mV.
+            \end{enumerate}
+
+            À la sortie du second étage, on obtient $5 mV - 4 \cdot V_{in}$.
+
+            \item Pour le troisième étage, il convient de séparer l'étude des sources alternatives et continues.
+            \begin{enumerate}[label=\alph*)]
+                \item La source alternative entre dans un montage non-inverseur de gain 10, la sortie vaut $-40 \cdot V_{in}$ (condensateur = court-circuit).
+                \item Pour la source continue, le condensateur se comporte comme un circuit ouvert, elle entre donc dans un autre étage suiveur, la sortie reprend la valeur de l'entrée~: 5~mV.
+            \end{enumerate}
+
+            En conséquence, $V_o = 5 mV - 2 V \cdot \sin(2\cdot \pi \cdot 50 t)$
+        \end{itemize}
+
+        \item Le premier étage sert à assurer l'adaptation d'impédance (en tension) entre la source alternative et le premier bloc amplificateur.
+    \end{enumerate}
+
+}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+% AOP réels
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{AOP réels}
+
+\Question{%Storey 5th, 16.24 et 16.25
+
+\begin{enumerate}
+\item
+    À partir de l'extrait de datasheet du LM741 suivant, donnez la valeur typique du produit gain-bande passante\footnote{\textit{Gain-bandwidth product} en anglais.}.
+    Si on conçoit un étage amplificateur de gain 15 à partir du LM741, quelle sera sa bande passante~?
+
+    \textit{Note~: Dans la datasheet suivante, la bande passante est donnée pour un gain unitaire.}
+
+    \begin{center}
+        \includegraphics[width=\linewidth]{lm741-gain-bandwidth-crop.pdf}
+    \end{center}
+\item
+    Si on veut construire un montage dont le gain total est de 150 avec une bande-passante de 100 kHz, combien faut-il d'étages composés de LM741 ?
+\end{enumerate}
+}
+{
+\begin{enumerate}
+\item
+    Le LM741 a un produit gain-bande passante typique de 1.5~MHz.
+    Ainsi, pour un gain de 15, la bande passante est de 100~kHz.
+\item
+    Le gain maximal par étage est de 15.
+    Puisqu'on multiplie les gains des étages mis en série, il nous faut $\lceil log_{15}150\rceil = 2 \mbox{étages}$.
+    Il ne faut \textbf{pas} 10 étages.
+\end{enumerate}
+}
+
+
+
+\Question{\label{q.tension-decalage}%Ex labo 2, 2.7
+
+    En considérant $R_s = 10 k\ohm$, $R_1 = 1 k\ohm$ et $R_2 = 9 k\ohm$~:
+    %100k =>10k parce que e0 spécifié pour Rs<=10k
+    % \vspace*{3cm}
+    % \marginpar{\qrcode[hyperlink,height=0.5in]{https://easyeda.com/editor\#id=UvtGQqemA}}
+    % \vspace*{-3cm}
+
+    \begin{center}
+        \includegraphics[scale=1.4]{montage-tension-de-decalage.pdf}
+    \end{center}
+
+    \begin{enumerate}
+        \item Calculez la tension de décalage à la sortie de l'amplificateur, soit $V_o(E_s = 0)$, dans le cas d'un LM741, puis d'un CA3140A.
+        Note~: commencez par ajouter la ou les causes de cette tension de décalage sur le montage.
+        \item Comparez les deux résultats obtenus. À quoi est due la différence~?
+        \paragraph{LM741}
+        \begin{center}
+            \includegraphics[width=\linewidth]{lm741-offset-voltage-crop.pdf}
+        \end{center}
+
+        \paragraph{CA3140A}
+        \begin{center}
+            \includegraphics[width=\linewidth]{ca3140-a-offset-voltage-crop.pdf}
+        \end{center}
+
+
+    \end{enumerate}
+}
+{
+    \begin{enumerate}
+        \item La tension de décalage en sortie est due aux imperfections de l'ampli-op.
+        Ces imperfections sont modélisées pour une source de tension continue $e_0$ à l'entrée non-inverseuse et une source de courant $I_+$ et $I_-$ à chaque entrée.
+        \begin{center}
+            \includegraphics[scale=1.4]{ampli-op-imperfections.pdf}
+        \end{center}
+
+        Puisqu'on ignore l'influence de la source «~normale~», le nouveau montage possède trois sources que nous allons étudier par superposition.
+        Attention, on a considéré un ampli-op réel (\textit{i.e.} non-idéal) pour mettre en évidence les imperfections de ce dernier.
+        Cependant, puisque ces imperfections ont été mise en évidence, qu'elles ont été «~sorties~» de l'ampli-op, on considère à nouveau un ampli-op idéal (et on peut donc utiliser le zéro virtuel).
+        \begin{itemize}
+            \item Influence de $e_0$~: $V_{out} = (1+\frac{R_2}{R_1})\cdot e_0$.
+            \item Influence de $I_+$~: puisqu'on considère encore que l'impédance d'entrée de l'ampli-op est infinie, le courant ne rentre pas dans l'ampli-op et passe entièrement dans $R_s$.
+            On a ainsi une tension $-R_s \cdot I_+$ à l'entrée non-inverseuse de l'ampli, donant une sortie $V_{out} = -(1+\frac{R_2}{R_1}) \cdot R_s \cdot I_+$.
+            \item Influence de $I_-$~: par le zéro virtuel, $V_+ = V_- = 0$.
+            La tension aux bornes de $R_1$ est donc nulle, ce qui implique que tout le courant $I_-$ passe dans $R_2$.
+            On a en sortie $V_{out} = R_2 \cdot I_-$.
+        \end{itemize}
+
+        En superposant les solutions, on trouve $V_{out} = (1+\frac{R_2}{R_1})\cdot e_0 -(1+\frac{R_2}{R_1}) \cdot R_s \cdot I_+ + R_2 \cdot I_-$.
+
+        $e_0$ se trouve dans les datasheets sous le nom de «~\textit{input offset voltage}~».
+        Quant à $I_+$ et $I_-$, ils se retrouvent dans les termes «~\textit{input offset current}~» (courant de décalage) qui vaut $I_+ - I_-$, et «~\textit{input bias current}~» (courant de polarisation) qui vaut $\frac{I_++I_-}{2}$.
+        En solvant le système, on peut trouver que $I_+ = i_{bias} + \frac{i_{offset}}{2}$ et $I_- = i_{bias} - \frac{i_{offset}}{2}$.
+
+        Pour le LM741, on trouve $e_0$ = 1~mv, $I_+$ = 90~nA et $I_-$ = 70~nA, ce qui donne $V_{out} = 9.99 mV$.
+
+        Pour le CA3140A, on trouve $e_0$ = 2~mv, $I_+$ = 10.25~pA et $I_-$ = 9.75~pA, ce qui donne $V_{out} = 20 mV$, l'influence des courants d'entrée sur la sortie est négligeable par rapport aux autres tensions du circuit.
+
+        \item La différence est due aux types de transistors utilisés dans chacun des amplis-op.
+        Le LM741 fonctionne avec des transistors bipolaires commandés en courant et consomment donc en permanence un certain courant.
+        En revanche, le CA3140A fonctionne avec des MOS qui ne demandent presque pas de courant, mais nécessitent une tension de commande légèrement plus élevée.
+    \end{enumerate}
+}
+
+
+
+\Question{%Ex labo 2, 2.8
+
+    Il arrive fréquemment que nous n'ayons pas accès à des alimentations symétriques.
+    Par exemple, les lecteurs multimédias portables sont généralement alimentés par des batteries fournissant une tension entre 3~V et 5~V, l'autre borne étant connectée à la masse du système.
+
+    \begin{enumerate}
+        \item Tracez la sortie du montage suivant, où $V_{in}$ est une sinusoïde d'amplitude 10~mV et de fréquence 5~kHz.
+        Quel problème peut-on observer~?
+
+        \begin{center}
+            \includegraphics[scale=1.4]{montage-polarisation.pdf}
+        \end{center}
+        % \vspace*{-2cm}
+        % \marginpar{\qrcode[hyperlink,height=0.5in]{https://easyeda.com/editor\#id=6Cp3jIj37}}
+        % \vspace*{2cm}
+
+        Pour supprimer ce problème, nous allons polariser le montage, ce qui signifie que nous allons changer la moyenne du signal de sortie au moyen d'un condensateur et d'une tension continue.
+
+        \begin{center}
+            \includegraphics[scale=1.4]{montage-polarisation-complet.pdf}
+        \end{center}
+        % \vspace*{-2cm}
+        % \marginpar{\qrcode[hyperlink,height=0.5in]{https://easyeda.com/editor\#id=i6GXypycA}}
+        % \vspace*{2cm}
+
+        \item À l'aide de la superposition, et pour une tension $V_{in}$ à très haute fréquence, expliquez en quoi ce circuit résout le problème.
+        Calculez la composante continue de la tension en tous les points du circuit.
+
+        \item Calculez la sortie $V_o = H_1(j\omega_{in}) \cdot V_{in} + H_2(j\omega_{5V}) \cdot 5 V$
+
+        \item Sachant que $V_{in}$ est un signal audio dont la bande passante s'étend de 20~Hz à 20~kHz, dimensionnez R1, R2 et C pour que le gain du montage soit le même que pour le montage non-polarisé dans toute cette bande de fréquence.
+
+        \item Réalisez un filtre RC permettant de supprimer cette composante continue sans déformer la composante alternative.
+        Dimensionnez ses composants.
+    \end{enumerate}
+}
+{
+    \begin{enumerate}
+        \item On obtient une sinusoïde dont les alternances négatives sont ramenées à zéro.
+        %\todo[inline]{Trouver un moyen de le faire dans EasyEDA. Pour le moment, on dirait qu'il ne comprend pas où se trouve la masse, il la prend toujours entre les deux bornes d'alimentation.}
+
+        \item Commençons par étudier la source continue seule.
+        Le condensateur est alors remplacé par un circuit ouvert.
+        On en déduit $V_+ = 2.5V$ et $V_{out} = 2.5 V$, puisque $R_1$ est en circuit ouvert (on a un étage suiveur).
+
+        Passons ensuite à la source alternative seule.
+        Cette fois-ci, le condensateur est remplacé par un court-circuit (la fréquence étant considérée comme suffisamment élevée).
+        On obtient $V_{out} = -\frac{R_2}{R_1}\cdot V_{in}$.
+
+        La sortie totale sera la somme des sous-circuits~: $V_{out} = 2.5 V - \frac{R_2}{R_1}\cdot V_{in}$.
+
+        La tension de sortie a donc bien été décalée et centrée autour de 2.5~V, il n'y aura donc plus d'écrêtage.
+
+        \item La composante continue ayant une pulsation nulle, elle aura une réponse fréquentielle constante de la même valeur que le diviseur résistif : $H_2(j\omega_{5V}) = \frac{1}{2}$.
+
+        En revanche, $H_1$ dépend bien de $\omega_{in}$ et $H_1(j\omega_{in}) = \frac{\underline{V}_{out}}{\underline{V}_{in}}$.
+        En mettant en série la résistance $R_1$ et le condensateur $C$, et en appliquant la formule du montage inverseur, on trouve $H_1(j\omega_{in}) = - \frac{R_2}{R_1 + \frac{1}{j\omega_{in}C}} = - \frac{j\omega_{in}C \cdot R_2}{j\omega_{in}R_1C + 1}$.
+        Il s'agit d'un filtre passe-haut.
+
+        \item Puisqu'on veut un gain de -100, on sait que $R_2 = 100 R_1$.
+
+        Ensuite, on veut que le montage soit fonctionnel entre 20~Hz et 20~kHz. Or, le montage étant un passe haut, il faut s'arranger pour que 20~Hz soit déjà considéré comme une haute fréquence.
+        Autrement dit, à cette fréquence, on souhaite retrouver un montage inverseur classique avec $H_1(j\omega_{in}) = - \frac{R_2}{R_1}$.
+        Pour y parvenir, il faut que $\frac{1}{\omega C} << R_1$, soit l'impédance du condensateur doit être beaucoup plus faible que $R_1$, avec $\omega = 2 \pi \cdot 20$.
+
+        En prenant arbitrairement $R_1 = 1k\Omega$, on a $R_2 = 100k\Omega$, et donc $C >> 8 \mu F$.
+        En pratique, un à deux ordres de grandeur suffisent~: prenons $C = 80 \mu F$.
+
+        \item Il suffit d'ajouter un filtre passe-haut en sortie du montage (pour rappel, il peut s'agir d'un condensateur $C_2$ et d'une résistance $R_3$ en série, en prenant la sortie sur la résistance).
+
+        À nouveau, la fréquence de coupure doit être plus basse que 20~Hz.
+        En prenant arbitrairement $R_3 = 100 k\Omega$, on choisira $C_2 = 800 nF$.
+    \end{enumerate}
+}
+
+% \section{Dimensionnement de circuit à ampli-op}
+\Question{%Ex labo 2, 3.1
+
+    \begin{enumerate}
+        \item Dimensionnez un étage amplificateur inverseur à ampli-op ayant un gain à vide $A_v = 14 dB$ et une impédance d'entrée $R_{in} \geq 10 k\ohm$
+
+        \item En supposant que l'ampli-op utilisé pour réaliser ce montage est un LM741, déterminez~:
+        \begin{itemize}
+            \item la bande passante du montage~;
+            \item la tension de décalage à la sortie.
+        \end{itemize}
+    \end{enumerate}
+}
+{
+    \begin{enumerate}
+        \item Le gain d'un inverseur est $A = -\frac{R_2}{R_1}$, avec $R_2$ la résistance de rétroaction et $R_1$ la résistance à l'entrée inverseuse.
+        Étant donné que 14~dB correspond à un gain de 5, on a $R_2 = 5 R_1$. Notez que le gain en décibel correspond à la valeur absolue du gain «~décimal~».
+        Dans le cas du montage inverseur, l'impédance d'entrée correspond à notre $R_1$.
+        Puisqu'on veut $R_{in} \geq 10 k\ohm$, on peut prendre $R_1 = 10 k\Omega$ et $R_2 = 50 k\Omega$.
+
+        \item Le produit gain-bande passante («~\textit{gain-bandwidth product}~», ou GBP en anglais) du LM741 étant de 1.5~MHz, la bande passante du montage vaut $\frac{GBP}{|A|} = 300 kHz$.
+
+        La tension de décalage se calcule de la même façon que dans l'exercice~\ref{q.tension-decalage}, à savoir $V_{out} = (1+\frac{R_2}{R_1})\cdot e_0 -(1+\frac{R_2}{R_1}) \cdot R_s \cdot I_+ + R_2 \cdot I_-$.
+        Cependant, dans le cas présent, la source $I_+$ est directment connectée à la masse et n'a donc aucune influence.
+        On obtient alors $V_{out} = 6\cdot e_0 + R_2 \cdot I_- = 33.5 mV$, puisqu'on a $e_0 = 1mV$ et $I_- = 70nA$.
+    \end{enumerate}
+}
+
+\Question{%Ex labo 2, 3.2
+
+    On vous demande de réaliser un amplificateur d'entrée pour l'entrée ligne d'une carte son d'ordinateur.
+    On vous donne les informations suivantes~:
+
+    \begin{center}
+        \includegraphics[scale=1.4]{circuit-dimensionnement.pdf}
+    \end{center}
+        % \vspace*{-2cm}
+        % \marginpar{\qrcode[hyperlink,height=0.5in]{https://easyeda.com/editor\#id=o6YcW6iEE}}
+        % \vspace*{2cm}
+
+    \begin{itemize}
+        \item La source de signal connectée à l'entrée de la carte fournit un signal sans composante continue et dont l'amplitude crête ne dépasse pas 100~mV, et son impédance de sortie est égale à 100~\ohm.%Je passe à 10mV pour qu'on doive utiliser un gain de 100. Comme la bande passante est de 20kHz, il faudrait deux LM741 (GBP 1.5MHz) ou un seul CA3140 (GBP 4.5MHz).
+        \item La sortie de l'étage à réaliser est connectée à un convertisseur analogique/numérique (CAN) dont l'impédance d'entrée est égale à 100~k\ohm. La plage de conversion du CAN va de $-1V$  à $+1V$.
+        \item Votre montage doit amplifier correctement les signaux entre 20~Hz et 20~kHz.
+        \item Vous avez à votre disposition des amplis-op LM741 ou CA3140A (dont les bandes-passantes respectives sont 1.5 MHz et 4.5 MHz).
+        Le LM741 coûte 0.54~\EUR/pièce et le CA3140A coûte 1.96~\EUR/pièce.
+    \end{itemize}
+}
+{
+    \begin{itemize}
+        \item Nous pouvons commencer par établir les contraintes de dimensionnement que nous devons respecter~:
+        \begin{itemize}
+            \item Impédance d'entrée~: étant donné qu'on travaille en tension, l'adaptation d'impédance doit se faire en tension à l'entrée de l'amplificateur~: $R_i >> 100 \Omega$.
+            \item Gain~: la valeur de crête du signal d'entrée est inférieure ou égale à 100~mV, et la valeur de crête admissible par le CAN est de 1~V. Le gain maximal vaut donc $A = \frac{1V}{100mV} = 10$.
+            \item Impédance de sortie~: on adapte à nouveau en tension, donc $R_o << 100 k\Omega$.
+        \end{itemize}
+
+        Sur base de ces critères, choisissons l'un des deux montages amplificateurs classiques (inverseur et non-inverseur).
+        Pour faire ce choix, il faut examiner les différences essentielles entre ces deux montages.\\
+
+        \begin{center}
+            \begin{tabularx}{.9\textwidth}{l|X|X}
+            & Inverseur & Non-inverseur \\ \hline
+            Impédance d'entrée & Égale à la résistance connectée à l'entrée inverseuse. & Quasi-infinie, l'adaptation d'impédance en tension est donc toujours effectuée. \\ \hline
+            Signe du gain & Inverse le signal. Lorsqu'il y a une composante continue, ce peut être gênant, mais s'il ne s'agit que d'un signal périodique alternatif, ça revient simplement à un déphasage de 180°. & Positif. \\ \hline
+            Valeur du gain & Au choix. & Ne peut être inférieur à 1. \\
+            \end{tabularx}
+        \end{center}
+
+        En conclusion, étant donné qu'on a un signal purement sinusoïdal et qu'on veut un gain supérieur à 1, les deux montages sont acceptables.
+        On choisira en général le montage non-inverseur pour son impédance d'entrée et la conservation du signe du signal.
+
+        Il reste à vérifier qu'un seul étage est suffisant au vu du produit gain-bande passante (GBP) de chacun des modèles.
+        Étant donné qu'il nous faut un gain de 10 pour une bande passante de 20~kHz, le GBP du LM741 et du CA3140A (respectivement 1.5~MHz et 4.5~MHz) est suffisant pour qu'un seul étage fasse l'affaire.
+
+        On peut finalement s'en sortir avec un seul montage non-inverseur comprenant une résistance de rétroaction de 90~k\ohm\ et une résistance sur l'entrée inverseuse de 10~k\ohm.
+    \end{itemize}
+}
+
+\Question{%Ex labo 2, janvier 2003
+
+    On désire amplifier un signal dont la bande passante s'étend de 2~kHz à 2~MHz.
+    Ce signal est représenté par une source composée d'une f.e.m. sinusoïdale $V_{in}$ de 10~mV et d'une impédance de sortie de 50~\ohm.
+        % \vspace*{2.5cm}
+        % \marginpar{\qrcode[hyperlink,height=0.5in]{https://easyeda.com/editor\#id=G9yeSbAQn}}
+        % \vspace*{-2.5cm}
+
+    \begin{center}
+        \includegraphics[scale=1.4]{dimensionnement-janvier-2003.pdf}
+    \end{center}
+
+    On désire obtenir à la sortie du bloc amplificateur, aux bornes de la charge $R$, un signal~:
+    \begin{itemize}
+        \item d'amplitude réglable, comprise entre 5~mV et 4~V au choix de l'utilisateur~;
+        \item non déphasé par rapport au signal d'entrée.
+    \end{itemize}
+
+    \begin{enumerate}
+        \item En supposant que l'impédance de charge $R$ vaut 10~k\ohm, proposez et dimensionnez un montage pour le bloc amplificateur.
+        Justifiez chaque étape de votre raisonnement et donnez un schéma final complet de votre montage amplificateur.
+
+        \item En supposant maintenant que la résistance de charge $R_c$ vaut 4~\ohm, comment faut-il modifier le montage et pourquoi~?
+    \end{enumerate}
+
+    Remarques~:
+    \begin{itemize}
+        \item Vous disposez de trois types d'amplis-op dont les caractéristiques sont données dans le tableau ci-dessous.
+        Si plusieurs solutions sont possibles, utilisez toujours la solution la moins coûteuse.
+        \item Pour chacune des questions ci-dessus, justifiez brièvement chaque étape de votre raisonnement.
+    \end{itemize}
+
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|c|c|} \hline
+        Type & $V_{DD}$ & $I_{out, max}$ [mA] & $A.B_w$ [MHz] & Slew-rate [V/µs] & Prix [\EUR] \\ \hline
+        AD8129 & 3~V à 12~V & 40 & 200 & 1070 & 3.65 \\ \hline %spec à +/-12V
+        OPA549 & 8~V à 60~V & 8000 & 0.9 & 100 & 21.31 \\ \hline
+        OPA132 & 4.5~V à 36~V & 40 & 8 & 20 & 3.97 \\ \hline
+        \end{tabular}
+    \end{center}
+}
+{
+    \begin{enumerate}
+        \item Établissons tout d'abord les contraintes de dimensionnement que nous devons respecter~:
+        \begin{itemize}
+            \item impédance d'entrée~: $R_i >> 50 \Omega$. Les deux types de montages sont possible.
+            \item gain~: $0.5 \leq A \leq 400$. Étant donné le gain inférieur à 1, il faut au moins un étage inverseur.
+            \item impédance de sortie~: $R_o << 10 k\Omega$. Les deux types de montages sont possible.
+            \item déphasage~: nul. Il faut un nombre pair d'inverseurs.
+        \end{itemize}
+
+        Le montage final comprendra au moins deux étages inverseurs.
+
+        Déterminons le gain maximum permit par chacun des amplis-op pour la bande passante requise~:
+
+        \begin{center}
+            \begin{tabular}{l|c|c|c}
+            AOP & AD8129 & OPA549 & OPA132 \\ \hline
+            Gain & 100 & 0.45 & 4 \\
+            \end{tabular}
+        \end{center}
+
+        On peut immédiatement écarter l'OPA549, il est non seulement moins bon, mais aussi plus cher.
+        La solution la moins chère pour obtenir un gain total de 400 est d'utiliser deux étages inverseurs à base de AD8129.
+
+        Cependant, si la résistance de charge vaut 4~\ohm, l'adaptation d'impédance à la sortie est certes respectée (en supposant une résistance nulle à la sortie de l'ampli-op), mais l'ampli-op doit pouvoir fournir un courant dont l'amplitude de crête est de $\frac{4V}{4\Omega} = 1 A$.
+        Or le ampli-op sélectionné ne peut fournir que 40~mA.
+        Il faut donc ajouter un troisième étage suiveur qui servira à fournir de la puissance à la charge.
+        On peut alors utiliser l'OPA549 qui peut fournir jusqu'à 8~A.
+        C'est cette caractéristique qui justifie son prix.
+        Cependant, cet étage ayant un gain maximal de 0.45, afin d'atteindre les 4 V désirés en sortie, il faudra que les deux étages inverseurs précédents puissent assurer un gain combiné de $\frac{400}{0.45} = 889$.
+
+        Le montage final comprend donc deux étages inverseurs (à base d'AD8129) et un étage suiveur de sortie (à base d'OPA549).
+    \end{enumerate}
+}
+
+
+\end{document}
