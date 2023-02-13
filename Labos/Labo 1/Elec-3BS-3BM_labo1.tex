@@ -55,7 +55,7 @@
 %% fancy header & foot
 \pagestyle{fancy}
 \lhead{[AE3T] Laboratoire d'électronique appliquée\\ Labo 1~: Redresseur/doubleur}
-\rhead{v1.0.0 \\ page \thepage}
+\rhead{v1.1.0 \\ page \thepage}
 \chead{\ifthenelse{\boolean{corrige}}{Corrigé}{}}
 \cfoot{}
 %%
@@ -122,7 +122,8 @@ Vous manipulerez ensuite un circuit 555 afin de générer un signal carré péri
 		\multirow{1}{*}{Résistance} 	& 1 & M$\Omega$ & x1 \\\midrule
 		\multirow{1}{*}{Condensateur} 	& 10 & nF & x2 \\\midrule
 		\multirow{1}{*}{Condensateur} 	& 33 & \textmu F & x2 \\\midrule
-		\multirow{1}{*}{Condensateur} 	& 1 & mF & x2 \\\bottomrule
+		\multirow{1}{*}{Condensateur} 	& 1 & mF & x1 \\\midrule
+		\multirow{1}{*}{Timer} 	& SE555 &  & x1 \\\bottomrule
 	\end{tabular}
 \end{center}
 
@@ -180,13 +181,17 @@ Réalisez le montage en utilisant une résistance $R_2$ de $10 k\Omega$ et une r
 Attention à bien choisir une tension d'entrée qui ne sature pas en fonction des alimentations choisies.
 }
 
+
+\Question{
 En profitant du fait qu'on a deux AOP dans un seul package de LM358, on peut facilement construire un redresseur double alternance de précision :
 \begin{center}
 	\includegraphics[width=.7\textwidth]{precision-rectifier-double.pdf}
 \end{center}
 
-\Question{
 Réalisez le montage en utilisant des résistances de $1 k\Omega$ et observez la forme de la tension de sortie.
+\begin{astuce}
+Vous pouvez garder les deux diodes et le premier AOP en place sur la breadboard, c'est le même agencement que la question précédente.
+\end{astuce}
 }
 {
 
@@ -230,9 +235,9 @@ L'application de cette manipulation consiste à doubler la tension continue util
 \Question{
 Sur base de la datasheet du timer et des composants présents dans le schéma :
 \begin{itemize}
-    \item Calculer et représenter graphiquement la période du signal carré qui sera produit par le 555 pour une tension Vin de 5V (Pin 4 \& 8)
-    \item Définir le comportement global du circuit
-    \item Exprimer $V_r$ (la tension aux bornes de la résistance) en fonction de la tension d'alimentation de 5 V \footnote{Allez-vous obtenir 10 V en sortie ?}. 
+    \item Calculez et représentez graphiquement la période du signal carré qui sera produit par le 555 pour une tension Vin de 5V (Pin 4 \& 8)
+    \item Définissez le comportement global du circuit
+    \item Exprimez \textit{qualitativement} $V_r$ (la tension aux bornes de la résistance) en fonction de la tension d'alimentation de 5 V, autrement dit anticipez les imperfections du montage. Allez-vous obtenir 10 V en sortie ? 
 \end{itemize}
 }{
 Réponse attendue : relation globale du doubleur de tension et de ses pertes, notamment dues à la tension de seuil des diodes.
@@ -255,8 +260,8 @@ Dans un premier temps, vous allez réaliser sur breadboard le schéma de la Figu
 \Question{
 \begin{itemize}
 	\item Quelle pin est la sortie du 555 ?
-	\item Quel signal obtenez-vous à cette sortie ?
-	\item Comparez votre mesure avec votre préparation théorique. Est-ce cohérent ? Expliquez !
+	\item Mesurez le signal que vous obtenez en sortie.
+	\item Comparez votre mesure avec votre préparation théorique. Est-ce cohérent ?
 \end{itemize}
 }
 {
@@ -303,20 +308,20 @@ Obtenez-vous la même Tension $V_r$ que celle obtenue à l'étape précédente ?
 }
 
 
-\Question{
-Quelle charge minimale pouvez-vous connecter à votre sortie ? Faites une estimation expérimentalement.
-}
-{
+% \Question{
+% Quelle charge minimale pouvez-vous connecter à votre sortie ? Faites une estimation expérimentalement.
+% }
+% {
 
-}
+% }
 
 
-\Question{
-Discutez du comportement général du circuit
-}
-{
+% \Question{
+% Discutez du comportement général du circuit
+% }
+% {
 
-}
+% }
 
 % \Question{
 
