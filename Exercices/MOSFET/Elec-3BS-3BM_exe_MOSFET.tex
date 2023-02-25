@@ -1,0 +1,781 @@
+\documentclass{../../template/tp}
+\usepackage[utf8]{inputenc}
+\usepackage{ucs}
+\usepackage[frenchb]{babel}
+\usepackage[T1]{fontenc}
+
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{wasysym} %smiley
+\usepackage{hyperref}% hyperliens
+\usepackage{tikz}
+\usetikzlibrary{babel,positioning,calc}
+\usepackage[]{circuitikz}
+\usepackage{textcomp}
+% \usepackage{minted}
+\usepackage[long]{datetime}
+\usepackage{gensymb} % \ohm, celsius
+\usepackage{framed}
+\usepackage{pdfpages}
+\usepackage{mathastext} % math as standfard text : units are respecting typography conventions.
+\usepackage{xspace} % typographie IN
+\usepackage[all]{hypcap} %lien pointe en haut des figures
+\langexam{frenchb}
+\usepackage{fancyhdr}
+
+\newboolean{koriG}
+\ifx\koriG\undefined
+\correction{false}
+\else
+\correction{true}
+\fi
+
+
+% \correction{true}
+
+\author{The Fantastic Four}
+
+
+\newcommand{\itgv}[1]{\ifthenelse{\boolean{corrige}}{{\color{blue}#1}}{}} %si corrigé vrai...
+\newcommand{\ifgv}[1]{\ifthenelse{\boolean{corrige}}{}{#1}} %si corrigé vrai...
+%% fancy header & foot
+\pagestyle{fancy}
+\lhead{[EL3T] Électronique appliquée\\ Exercices : MOSFET}
+\rhead{v1.0.0\\ page \thepage}
+\chead{\ifthenelse{\boolean{corrige}}{Corrigé}{}}
+\cfoot{}
+%%
+
+\pdfinfo{
+/Author (GEI)
+/ModDate (D:\pdfdate)
+}
+
+\hypersetup{
+pdfauthor={GEI},
+pdfsubject={MOSFET}
+}
+
+%\date{\vspace{-1cm}\mydate\today}
+%\title{\vspace{-2cm} Labo \no 6\\ Électronique appliquée [ELEC-H-301]\\Réalisation d'un ampli à transistor\ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}
+
+%\author{\vspace{-1cm}}%\textsc{Yannick Allard}}
+
+\setlength{\parskip}{0.4cm plus1mm minus1mm} %espacement entre §
+\setlength{\parindent}{0pt}
+\setlength{\headheight}{30pt}
+
+
+\begin{document}
+
+\tptitle{}{Exercices : MOSFET}
+\ifthenelse{\boolean{corrige}}{\vspace{-2cm}}{}
+% \section{Introduction}
+% \subsection{But}
+% Le but de ce TP est de vous rafraîchir la mémoire sur les transistors MOS et de vous préparer efficacement au labo \no 4. Ce TP fait office de prédéterminations pour le labo.
+% \subsection{Prérequis}
+% Avoir lu et compris le chapitre 18 (ed 5) du support de cours portant sur les transistors MOS.
+
+% Avoir trouvé la documentation des transistors utilisés dans cette séance d'exercices.
+
+% \subsection{Objectifs}
+% À la fin de ce TP, vous devrez être capable :
+% \begin{itemize}
+% \item d'utiliser les notations des grandeurs liées au transistor MOS
+% \item comprendre comment utiliser une source de courant commandée en tension pour réaliser un amplificateur tension--tension
+% \item de comprendre la polarisation du transistor MOS et ses conséquences sur le point de fonctionnement %(= caractéristiques à petit signal)
+% \item de réaliser un schéma à petit signal d'un montage à transistor
+% \item d'extraire les paramètres intéressants de la documentation d'un transistor en vue de dimensionner un étage
+% \item d'aborder sereinement des exercices de dimensionnement et le laboratoire portant sur le transistor MOS.
+% \end{itemize}
+% \subsection{Lexique}
+% %\section{Get ready, Set! Go!!!!}
+% \begin{center}
+% \begin{footnotesize}
+% \begin{tabular}{rl|rl}
+% \textit{Gate} & Grille 		& \textit{Operating point	} & point de fonctionnement \\
+% \textit{Source} & Source 	& \textit{Coupling capacitor} & capacité de couplage\\ 
+% \textit{Drain} & Drain 		& \textit{Common source amplifier} & amplificateur à source commune\\
+% \textit{Load line} & droite de charge & \textit{Quiescent drain current} & courant de drain statique \\ 
+% & & \textit{Power dissipation} & puissance dissipée \\
+% \end{tabular} 
+% \end{footnotesize}
+% \end{center}
+% \newpage
+% \section{Notations}
+% L’objectif de cette question est de vous familiariser avec les notations des différentes grandeurs électriques liées à l'utilisation d'un transistor MOS.
+
+% Soit le schéma électrique du transistor MOS et son équivalent à petit signal~:
+
+% \ifthenelse{\boolean{corrige}}{ %if, then
+
+% } %/then
+% { %else
+% \begin{center}
+% %\shorthandoff{:!}
+% 		\begin{circuitikz} \draw
+% 		(2.25, 1) node[nfet] (mos) {}
+% %		(0,0) -- (2,2)
+% %		(0,0) node[nfet]{} -- (2,2)
+% 		%(mos.B) node[anchor=west] {B}
+% 		%(mos.G) node[anchor=east] {}		
+% 		(mos.D) -- (2.25, 2) to  [short, -o](3.25, 2)  node[anchor=west] {} %D		
+% 		(mos.S) -- (2.25, 0) to [short, -o](3.25, 0)  node[anchor=west] { } %S		
+% 		(mos.B) -- (mos.S)
+% 		(2.25,0) to [short, -o](0,0)  node[anchor=east] {} %S		
+% 		(0,2)  node[anchor=east]{}[short, o-] to  (1,2) %G
+% 		(1,2) -- (1,1) -- (mos.G)
+% 		%(gin) -- (mos.G)
+% 		;\end{circuitikz}\hspace*{1cm}
+% 		\begin{circuitikz}\draw
+% 		(0,0) node[anchor=east] {} %g
+% 		to [short, o-] (1,0) 
+% 		to [open, v<={~}] (1,-2)
+% 		to [short, -o] (4,-2)
+% 		to [short, -o] (0,-2) node[anchor=east] {} %s
+% 		%to [short] (3,-2)
+% 		(3,0) to [cI, i={~}] (3,-2)
+% 		(3,-2) to [short, -o] (4,-2) node[anchor=west] {} %s
+% 		(3,0) to [short, -o] (4,0)
+% 		to node[anchor=west] {} (4,0) %d
+% 	;\end{circuitikz}
+% %\shorthandon{:!}		
+% 	\end{center}
+% } %/else
+
+% 	%\vspace*{-0.5cm}
+% \Question{~\\%~\\ %sinon, ça fait dlm
+% \begin{itemize}
+% \item Identifier les ports des deux schémas.
+% \item Remplir le tableau suivant et indiquer les grandeurs sur le schéma.\vspace{-1.5Em}
+% \end{itemize}
+
+
+
+% \begin{center}
+% \begin{tabular}{|c|l|c|c|}
+% \hline 
+% {grandeur} &{\hspace*{1cm}nom\hspace*{1cm}}--{\hspace*{2cm}signification\hspace*{2cm}} & {statique} & {dynamique}\\ 
+% \hline 
+% $V_{GS}$ &  \itgv{tension de polarisation grille--source (V)}  & \itgv{x} &  \\ [1.5em]
+% \hline
+% $v_{gs}$ &  \itgv{tension G--S à petit signal (V)}  &  & \itgv{x} \\ [1.5em]
+% \hline
+% $V_{DS}$ &  \itgv{tension de polarisation D--S (V)}  & \itgv{x} &  \\ [1.5em]
+% \hline
+% $v_{ds}$ &  \itgv{tension D--S à p.s. (V)}  &  & \itgv{x} \\ [1.5em]
+% \hline
+% $I_{D}$ &  \itgv{courant de drain statique (A)}  & \itgv{x} &  \\ [1.5em]
+% \hline 
+% $g_{m}$ &  \itgv{transconductance du transistor (A/V=S)}  &  & \itgv{x} \\ [1.5em]
+% \hline 
+% $g_{m}\cdot v_{gs}$ &  \itgv{courant de drain à petit signal (A)}  &  & \itgv{x} \\ [1.5em]
+% \hline 
+% \end{tabular} 
+% \end{center}
+% }%
+% { Voir table.
+% }
+% \newpage
+% \section{Amplifier avec une source de courant commandée idéale }
+% Afin de réaliser un amplificateur \textbf{tension--tension}, on se propose d'utiliser un transistor MOS. 
+% %
+% Or le transistor MOS se comporte comme une source de \textbf{courant} -- non idéale -- commandée en tension et ne peut donc pas être utilisé immédiatement pour réaliser une source de tension commandée en tension. En pratique, lorsque le point de fonctionnement est correctement choisi, la source non-idéale a un comportement presque idéal.
+% %
+% %L'intérêt du transistor MOS est de se comporter comme une source de \textbf{courant} commandée en tension, malheureusement imparfaite. %Dans un premier temps, considérons une source idéale.
+% %
+% %Voyons d'abord comment construire un amplificateur tension--tension en utilisant une source de courant commandée en tension \textit{idéale}.
+% %
+% %La première étape sera d'amplifier de tension à tension en utilisant une source de courant \textit{idéale} commandée en tension.
+% %
+% La source \textit{idéale} utilisée est représentée figure \ref{fig:source}\footnote{NB : le symbole européen de la source de courant commandée est utilisé ici}.
+% %
+% \begin{figure}[h!]
+% 	\begin{center}
+% 		\begin{circuitikz}\draw
+% 			(0,0) node[anchor=east] {g} 
+% 			to [short, o-] (1,0) 
+% 			to [open, v<=$v_{gs}$] (1,-2)
+% 			to [short, -o] (0,-2)
+% 			to  (0,-2) node[anchor=east] {s}
+% 			%to [short] (3,-2)
+% 			(3,0) to [cI=$ g \cdot v_{gs}$] (3,-2)
+% 			(3,-2) to [short, -o] (4,-2) node[anchor=west] {s}
+% 			(3,0) to [short, -o] (4,0)
+% 			to node[anchor=west] {d} (4,0)
+% 			(1,-2) -- (3,-2)
+% 		;\end{circuitikz}
+% 	\end{center}
+% \caption{Source de courant commandée en tension}
+% \label{fig:source}
+% \end{figure}
+
+
+% %\subsection{Caractéristique de transfert de cette source commandée idéale}
+% %équations + courbes ??
+
+% Cette source \textit{idéale} absorbe un courant proportionnel à la tension d'entrée selon la~loi : $$i_d = g \cdot v_{gs}$$
+
+% où $g$ est la transconductance de la source. 
+
+
+% \Question{
+% \begin{itemize}
+% \item À quelle condition cette source est-elle linéaire ?
+% \item Tracer sa caractéristique de transfert.
+% \item Que faut-il ajouter pour obtenir un amplificateur tension--tension.
+% \end{itemize}
+	
+% 	\label{Q:1}
+	
+% 	}
+% 	{
+% 	\begin{itemize}
+% 		\item $g$ doit être constante par rapport à $v_{gs}$.
+% 		\item $i_d=f(v_{gs})$\\
+% 			\begin{tikzpicture}[domain=-5:5]
+% 		    \draw[very thin,color=gray,xstep=1, ystep=0.1] (-4,-1.05) grid (4,1);
+% 		    \draw[->, thick] (-4.2,0) -- (4.2,0) node[right] {$v_{gs}$};
+% 		    \draw[->, thick] (0,-1.2) -- (0,1.2) node[above] {$i_d$};
+% 		    \draw[color=red,thick] plot[id=x] function{0.2*x} 
+% 		        node[right] {$i_d(v_{gs})$};
+% 		%    \draw[color=blue] plot[id=sin] function{sin(x)} 
+% 		 %       node[right] {$f(x) = \sin x$};
+% 		  %  \draw[color=orange] plot[id=exp] function{0.05*exp(x)} 
+% 		   %     node[right] {$f(x) = \frac{1}{20} \mathrm e^x$};
+% 		\end{tikzpicture}
+% 		\item il faut ajouter une résistance pour \og convertir \fg le courant en tension. Il faut la mettre en parallèle avec la source de courant (source de Norton).
+% 		\end{itemize}	
+	
+% 	}
+	
+% 	\newpage
+\section{Polarisation et point de fonctionnement}
+
+% \Question {
+% Rappel TP3 : résoudre ce circuit à AOP avec polarisation (En considérant que les condensateurs se comportent comme des court-circuits à la fréquence de la source $v_{in}$) :
+% \begin{center}
+ 
+
+%  \begin{circuitikz} [scale=1.2]\draw
+%  (0,0) node[op amp] (opamp) {}
+% % (opamp.+) node[left] {$v_+$}
+% % (opamp.-) node[left] {$v_-$}
+% % (opamp.out) node[right] {$v_o$}
+%  (opamp.down) ++ (0,-0.5) node[ground]{} -- (opamp.down)
+%  (opamp.up) ++ (0,.5) node[above] {12V} -- (opamp.up)
+%  (opamp.-) -| (-1.5,2) to [R, l=$R2$] (1.5,2) |-  (opamp.out)
+%  (opamp.+) -| (-1.5,-0.4) to [european voltage source, l_=$V_{C}$,-*] (-1.5,-2) node[ground] {} 
+%  (-4,-2) node[ground] {}  to [sV,*-*] (-4,0.4) |- ++(0.5,0) to [C,l=$C1$] ++(0.25,0) to [R,l=$R1$] (opamp.-)
+%  (-4,-2) node[anchor=west] {\itgv{$0V$}}
+%  (-1.5,-2) node[anchor=west] {\itgv{$0V$}}
+%  (-2.9,0.4) node[circ]{}
+%  (-2.9,0.4) node[anchor=south]{\rotatebox{90}{\itgv{$6.3V+v_{in}$}}}
+%  (-1.5,0.4) node[circ]{}
+%  (-1.5,0.4) node[anchor=south west]{\rotatebox{42}{\itgv{$6.3V$}}}
+%  (-1.5,-0.4) node[circ]{}
+%  (-1.5,-0.4) node[anchor=east]{\itgv{$6.3V$}}
+%  (1.5,0) node[circ]{}
+%  (1.5,0) node[anchor=south west]{\itgv{$6.3V-10v_{in}$}}
+%  (opamp.out) to (2.5,0)
+%  (2.5,-2) node[ground] {} to [open, v>=$V_{out}$] (2.5,0)
+%  (-4.5,-2) to [open, v^>=$v_{in}$] (-4.5,0.5)
+%  (-4,0.4) node[anchor=east] {\itgv{$v_{in}$}}
+% % (-1.5,-2)
+
+%  ;\end{circuitikz}
+
+% \end{center}
+% $R1=1k\Omega$, $R2=10k\Omega$, $C1=1\mu F$, $v_{in}=0.42 sin(\omega t) V$, $V_C=6.3V$
+
+% \begin{itemize}
+% \item Calculer les tensions en tout point du circuit.
+% \end{itemize}
+
+
+% }
+% {
+
+% Nous pouvons utiliser le principe de superposition afin de déterminer les contributions de $V_C$ et $v_{in}$ respectivement avant de les sommer.
+
+% Commençons par les contributions de $V_C$.
+% Nous avons tout d'abord $V+ = V_C$ et par le zéro virtuel (en supposant qu'on ne sature pas et qu'il s'agit bien d'un ampli op idéal), $V- = V+ = V_C$.
+% Étant donné qu'il s'agit d'une source de tension continue, nous pouvons appliquer la loi long terme du condensateur (loi basse fréquence) et considérer qu'il se comporte comme un \textbf{circuit ouvert}.
+% On n'a alors pas de courant circulant dans $R_1$, donc pas de chute de potentiel sur $R_1$, donc on retrouve $V_C$ à sa borne gauche.
+% De même, nous n'avons pas de courant circulant dans $R_2$ (aucun courant n'entre par l'entrée de l'AOP et le condensateur se comporte comme un circuit ouvert), donc pas de chute de potentiel, donc toujours le même $V_C$ à la tension de sortie.
+% Nous retrouvons bien un montage \textbf{suiveur}.
+
+% Passons aux contributions de $V_{in}$. Cette fois-ci, nous appliquons la loi court terme (haute fréquence) du condensateur, il se comportera comme un \textbf{court-circuit}.
+% Étant donné que nous court-circuitons $V_C$ dans cette étape de la superposition, nous avons devant nous un montage \textbf{inverseur} classique.
+% Sachant que son gain est $\frac{- R_2}{R_1}$, nous trouvons $V_{out} = 10 \cdot V_{in}$.
+
+
+% }
+
+\Question{
+\label{Q:ex4}
+Soit le circuit suivant :
+\begin{center}
+			%\includegraphics[width=8cm]{}
+			\begin{circuitikz}[scale=1]\draw
+			(0,1) to [short,o-] (9,1)
+			(4,6) to [short] (9,6)
+			(0,3) node[anchor=east] {In} to [short,o-] (1,3)
+			(0,3) node[anchor=south]{\itgv{$0V$}} to [open, v_<=$V_{in}$]  (0,1) 
+			(1,3) to [C=$C_{in}$ ](1.5,3) 
+			(1.5,3) to [short,-*] (2,3) node[anchor=south west]{\itgv{$3.1V$}}
+	%
+			(2,6) node[anchor=south ] (alim) {$+V_{DC}$}
+			(1.6,6) -- (2.4,6) %bar under the label
+			%(alim.text) node {}
+	%		
+			(2,3) to [R, l_=$R_{B1}$, i<=\itgv{$31\mu A$}](2,6)
+			(2,3) to [R=$R_{B2}$](2,1)
+	%		
+			(4,3) node[nfet] (mos) {}
+			%(mos.B) node[anchor=west] {B}
+			(mos.G) to [short] (2,3)
+	%		
+			(mos.D) to (4,4) to [R, l_=$R_D$, i<=\itgv{$67mA$}] (4, 6)		
+			%(4,5.5) to [R] (mos.D)
+	%		
+			(mos.D) to [short,-*](4,3.5)  to [short] (4.25,3.5)
+	%		
+			(mos.S) to [short] (4,1)% to [short, -o](2,0)  node[anchor=west] {S}
+			(mos.S) -- (mos.B) %source to bulk connection		
+	
+			(4.25,3.5) node[anchor=south]{\rotatebox{80}{\itgv{$5.3V$}}} to [C, l^=$C{out}$] (6,3.5) to  [short](6,3.5)node[anchor=south]{\rotatebox{80}{\itgv{$0V$}}} to [short,-o](6.5,3.5)node [anchor=south] {Out}	
+			(6,3.5) to [generic, l_=$R_{ch}$] (6,1)
+			(6.5,3.5) to [open,v^<=$V_{out}$] (6.5,1)
+	%		
+			(9,6) to [battery, l_=$E$](9,1)
+			
+			%\ithenelse{\boolen{corrige}}{
+			(4,1) node[circ]{}
+			%}{}
+			% (4,1) node[anchor=south west]{\itgv{$0V$}}
+			(4,1) node[ground]{}
+			(4,6) node[anchor=south west]{\itgv{$12V$}}
+			(2,5) node[anchor=south west]{\itgv{$6.2V$}}
+	%		%(1,0) to [short, -o](-1,0)  node[anchor=east] {S}
+	%		
+	%%			(0,0) node[anchor=east] {In} 
+	%%			to [short, o-] (1,0) 
+	%%			to [open, v=$V_{GS}$] (1,-2)
+	%%			to [short, -o] (0,-2)
+	%%			to  (0,-2) node[anchor=east] {S}
+	%%			to [short] (3,-2)
+	%%			(3,0) to [cI=$ g_m \cdot V_{GS}$] (3,-2)
+	%%			(3,-2) to [short, -o] (4,-2) node[anchor=west] {S}
+	%%			(3,0) to [short, -o] (4,0)
+	%%			to node[anchor=west] {D} (4,0)
+	%	%		
+			;\end{circuitikz}
+	\end{center}
+	
+	Valeurs des composants/sources : 	$V_{DC}=6.2V$, $R_{B1}=R_{B2}=100k\Omega$, $R_D=100\Omega$, $C_{in}=100nF$, $C_{out}=2.2\mu F$, $E=12V$, $R_{ch}=3.3k\Omega$, $V_{in}$ sinusoïdale
+	
+	\begin{itemize}
+	\item Calculer les tensions et courants \textbf{continus} en tout point du circuit.
+	Aidez-vous des caractéristiques du BS170 en annexe si nécessaire.
+	\item Placer le point de fonctionnement sur les courbes caractéristiques du BS170 en annexe, en déduire $I_D$ et $g_m$.
+	\item Tracer également la droite de charge et indiquer les limites de linéarité. % statique.
+	\end{itemize}
+	
+	
+	
+	}
+	{%
+	Étant donné que nous ne travaillons qu'avec les tensions \textbf{continues} du montage, nous ignorons complètement $V_{in}$.
+	De plus, les condensateurs se comportent comme des circuits \textbf{ouverts} (loi long terme, basse fréquence).
+	Sachant qu'aucun courant ne peut entrer par la grille du transistor, l'intégralité du courant débité par la source $V_{DC}$ passe par $R_{B1}$ et $R_{B2}$.
+	On retrouve un classique diviseur résistif nous permettant de déterminer $V_G = 3.1 V$.
+
+	Étant donné que $V_S = 0 V$, nous pouvons utiliser la caractéristique de \textbf{transfert} du transistor pour déterminer $I_D$ sachant que $V_{GS} = 3.1 V$. On lit ainsi que $I_D = 67 mA$.
+
+	Passons ensuite à la partie droite du montage.
+	Puisque $C_{out}$ est un circuit ouvert pour les grandeurs continues, nous n'avons qu'une seule et unique maille dont l'équation est $E = R_D \cdot I_D - V_{DS}$, soit $V_{DS} = 5.3 V$.
+
+	
+	}
+
+%TODO : ajouter droite de charge
+
+\section{Schéma à petit signal}
+
+\Question
+{
+%question
+Sachant que $V_{DC}$ a été judicieusement choisie pour obtenir $g_m=0.197S$ :
+ 
+ \begin{itemize}
+ \item Déterminer le schéma à petit signal du montage présenté à la question 4.
+ \item Calculer le gain du montage dans la bande passante. Les condensateurs peuvent être assimilés à des court-circuits dans la bande passante du montage.
+ \item Calculer les impédances d'entrée et de sortie du montage. Attention, la charge ne fait pas partie de l'impédance de sortie du montage.
+ \item Bonus : Donner l'expression des impédances d'entrée et de sortie pour toute fréquence (\textit{i.e.} l'approximation du premier point n'est plus valable).
+ \item Bonus : Calculer la fréquence de coupure à l'entrée et à la sortie du montage.
+ \item Bonus : Établir la fonction de transfert complète du montage. Quel est le comportement de ce montage ?
+ %\item Bonus : en considérant l'entrée du transistor MOS comme une capacité de $1pF$, calculer la fréquence de coupure haute du montage.ainsi que le gain pour toute fréquence
+ \end{itemize}
+
+}
+{%answer
+\begin{enumerate}
+	\item Considérons d'abord le montage le plus simple où les condensateurs sont remplacés par des court-circuits à la fréquence de $V_{in}$.
+\begin{itemize}
+\item \textbf{Schéma à petit signal}
+\begin{center}
+			%\includegraphics[width=8cm]{}
+			\begin{circuitikz}[scale=0.8]\draw
+			(1,0) to [short,o-o] (11,0)
+			%(2,6) to [short] (8,6)
+			(1,3) node[anchor=east] {In} to [short,o-] (1,3)
+			(1,3) to [open, v_<=$V_{in}$]  (1,0)
+			%(1,3) to [C=$C_{in}$](1.5,3)
+			(1,3) to [short] (3,3)
+			(2,3) to [R, l_=$R_{b1}$](2,0)
+			(3,3) to [R=$R_{b2}$](3,0)
+			(3,3) to [short,-o](4,3) node [anchor=west] {} 
+			(4,3) to [open, v^<=$v_{gs}$](4,0)
+			%(4,3) node[nigfetec] (mos) {}
+			%(mos.B) node[anchor=west] {B}
+			%(mos.G) to [short] (2,3)	
+			(6,3) to [cI=\rotatebox{90}{$g_m \cdot v_{gs}$}] (6,0)
+			(8.5,0) to [R,l_=$R_D$] (8.5,3)			
+			%(mos.D) to [short](4,3.5)  to [short] (4.25,3.5)
+			%(mos.S) to [short] (4,0)% to [short, -o](2,0)  node[anchor=west] {S}
+			%(4.25,3.5) to [C, l_=$C_{out}$] (6,3.5) to [short,-o] (6,3.5)node [anchor=south] {out}	
+			(10,3) to [generic, l=$R_{ch}$] (10,0)
+			(6,3) to [short,-o] (11,3) node [anchor=west] {Out}
+			(11,3) to [open, v^<=$V_{out}$](11,0)
+			%(8,0) to [battery, l=$E$](8,6)
+			%(1,0) to [short, -o](-1,0)  node[anchor=east] {S}
+	%			(0,0) node[anchor=east] {In} 
+	%			to [short, o-] (1,0) 
+	%			to [open, v=$V_{GS}$] (1,-2)
+	%			to [short, -o] (0,-2)
+	%			to  (0,-2) node[anchor=east] {S}
+	%			to [short] (3,-2)
+	%			(3,0) to [cI=$ g_m \cdot V_{GS}$] (3,-2)
+	%			(3,-2) to [short, -o] (4,-2) node[anchor=west] {S}
+	%			(3,0) to [short, -o] (4,0)
+	%			to node[anchor=west] {D} (4,0)%\ithenelse{\boolen{corrige}}{
+			(4,0) node[circ]{}
+			(4,0) node[ground]{}
+			;\end{circuitikz}
+		\end{center}
+		
+	\item \textbf{Gain du montage :}
+	Dans la partie gauche du montage, on a $v_{gs} = V_{in}$.
+	À droite, $V_{out} = - i_d \cdot (R_D // R_{ch})$, où $i_d = g_m \cdot v_{gs}$.
+	Le gain du montage vaut donc \[A=-g_m\cdot \left(R_D//R_{ch}\right)\]
+
+	\item \textbf{Impédances d'entrée et de sortie :} Pour calculer une impédance d'entrée, on place une source de tension virtuelle $V_x$ à l'extrémité du montage tout en \textit{annulant} toutes les autres sources. Cette source $V_x$ débitant un courant $i_x$, on peut déterminer l'impédance du montage en calculant $Z = \frac{V_x}{i_x}$.
+	
+	\begin{center}
+		\begin{circuitikz}[scale=0.8]\draw
+		(1,0) to [short,o-o] (4,0)
+		(1,3) node[anchor=east] {} to [short,o-] (1,3)
+		(1,3) to [open, v_<=$V_x$]  (1,0)
+		(1,3) to [short, i=$i_x$] (2,3)
+		(2,3) to [short] (3,3)
+		(2,3) to [R, l_=$R_{b1}$](2,0)
+		(3,3) to [R=$R_{b2}$](3,0)
+		(3,3) to [short,-o](4,3) node [anchor=west] {} 
+		(4,3) to [open](4,0)
+		
+		(2.5,0) node[circ]{}
+		(2.5,0) node[ground]{}
+		;\end{circuitikz}
+	\end{center}
+
+	L'impédance d'entrée du circuit vaut $Z_{in}=R_{b1}//R_{b2}$. 
+	
+
+	Pour l'impédance de sortie, on ne prend pas en compte la résistance de charge.
+	On souhaite déterminer l'impédance de sortie du \textit{montage} afin notamment de déterminer si on a une bonne adaptation d'impédance avec la charge connectée en aval.
+	De plus, il faut annuler la source de courant $i_d$ qui devient un circuit ouvert.
+\begin{center}
+	\begin{circuitikz}[scale=0.8]\draw
+	
+	(6,3) to [short] (6,2)
+	(6,0) to [short] (6,1)
+	(8.5,0) to [R,l_=$R_D$] (8.5,3)	
+	% (10,3) to [generic, l=$R_{ch}$] (10,0)
+	(6,3) to [short,-o] (11,3) node [anchor=west] {}
+	(11,3) to [short, i=$i_x$] (9,3)
+	(11,3) to [open, v^<=$V_x$](11,0)
+	(7,0) node[circ]{}
+	(7,0) node[ground]{}
+	(6,0) to [short,-o] (11,0)
+	;\end{circuitikz}
+\end{center}
+	
+	
+	L'impédance de sortie vaut $Z_{out}=R_D$.
+	\end{itemize}
+
+	\item Si on ne considère plus les condensateurs comme des court-circuits, on obtient :
+	\begin{itemize}
+	\item \textbf{Le montage à petit signal devient :}
+	\begin{center}
+		\begin{circuitikz}[scale=0.8]\draw
+		(0,0) to [short,o-o] (11,0)
+		(0,3) node[anchor=east] {In} to [short,o-] (0,3)
+		(0,3) to [open, v_<=$V_{in}$]  (0,0)
+		(0.5,3) to [C=$C_{in}$](1.5,3)
+		(0,3) to [short] (0.5,3)
+		(1.5,3) to [short] (3,3)
+		(2,3) to [R, l_=$R_{b1}$](2,0)
+		(3,3) to [R=$R_{b2}$](3,0)
+		(3,3) to [short,-o](4,3) node [anchor=west] {} 
+		(4,3) to [open, v^<=$v_{gs}$](4,0)
+		(6,3) to [cI=\rotatebox{90}{$g_m \cdot v_{gs}$}] (6,0)
+		(7.5,0) to [R,l_=$R_D$] (7.5,3)
+		(8,3) to [C=$C_{out}$](9,3)
+		(6,3) to [short] (8,3)
+		(10,3) to [generic, l=$R_{ch}$] (10,0)
+		(9,3) to [short,-o] (11,3) node [anchor=west] {Out}
+		(11,3) to [open, v^<=$V_{out}$](11,0)
+		(4,0) node[circ]{}
+		(4,0) node[ground]{}
+		;\end{circuitikz}
+	\end{center}
+	\item \textbf{Gain du montage : } Remplaçons la résistance équivalante à $R_{B1} // R_{B2}$ par $R_B$ par clarté. Cette fois-ci, la partie gauche du montage nous donne un diviseur impédant : \[v_{gs} = V_{in} \cdot \frac{R_B}{R_B + Z_{Cin}}\]
+	où $Z_{Cin} = \frac{1}{j\omega C_{in}}$
+
+	Dans la partie droite du montage, nous avons :
+	\begin{center}
+		\begin{circuitikz}[scale=0.8]\draw
+		(6,3) to [cI_=$i_d$] (6,0)
+		(7.5,0) to [R,l_=$R_D$] (7.5,3)
+		(7.5,0) to [short,i=$i_1$] (7.5,0.5)
+		(8,3) to [C=$C_{out}$](9,3)
+		(10,3) to [short,i=$i_3$] (9,3)
+		(10,3) to [generic, l=$R_{ch}$] (10,0)
+		(10,0) to [short,i=$i_2$] (10,0.5)
+		(9,3) to [short,-o] (11,3) node [anchor=west] {Out}
+		(6,3) to [short] (8,3)
+		(11,3) to [open, v^<=$V_{out}$](11,0)
+		(7,0) node[circ]{}
+		(7,0) node[ground]{}
+		(6,0) to [short] (11,0)
+		;\end{circuitikz}
+	\end{center}
+
+	Dès lors, $i_2 = i_3$ et $i_d = i_1 + i2$. En posant $V_{out} = - i_2 \cdot R_{ch}$, on peut résoudre un système nous donnant le gain du montage : 
+	\[A = -g_m \cdot \frac{R_B}{Z_{Cin} + R_B} \cdot R_{ch} \cdot \frac{R_D}{R_D + R_{ch} + Z_{Cout}}\]
+	où $R_{Cout} = \frac{1}{j\omega C_{out}}$
+		
+	Il s'agit d'un filtre passe-haut du second ordre.
+	On constate que le gain dépend de la charge et que le montage est inverseur.
+
+	
+	\item \textbf{Impédances d'entrée et de sortie.}
+	
+	Si on ne considère plus les condensateurs comme des court-circuits, on obtient pour l'impédance d'entrée : $$Z_{in}=\frac{1}{jC_{in}\omega}+R_{b1}//R_{b2}$$
+
+	De même, on obtient : $$Z_{out}=R_D+\frac{1}{jC_{out}\omega}$$
+	puisque les $C_{out}$ et $R_D$ sont bien parcourus par le même courant virtuel $i_x$ dans le calcul de cette impédance de sortie.
+
+	\item \textbf{Fréquences de coupure des filtres en entrée et en sortie : }
+	En entrée, nous avons un simple filtre RC où la sortie est prise sur la mise en parallèle des deux résistance.
+	Nous pouvons donc en déduire que : $$f_{c_{in}}=\frac{1}{2\pi\cdot\left(R_{b1}//R_{b2}\right)\cdot C_{in}}$$
+
+	En sortie, la charge influe sur la fréquence de coupure.
+	Nous pouvons construire un équivalent de Thévenin du comportement du montage (hors charge) comme suit :
+	\begin{center}
+		\begin{circuitikz}[scale=0.8]\draw
+		(6,0) to [open, v^=$V_{in}$] (6,3)
+		(7,3) to [generic, l=$Z_{out}$](10,3)
+		(10,3) to [generic, l=$R_{ch}$] (10,0)
+		(6,3) to [short] (7,3)
+		(10,3) to [short,-o] (11,3)
+		(11,3) to [open, v^<=$V_{out}$](11,0)
+		(7,0) node[circ]{}
+		(7,0) node[ground]{}
+		(6,0) to [short] (11,0)
+		;\end{circuitikz}
+	\end{center}
+
+	où $Z_{out}$ est l'impédance de sortie déterminée précédemment et résultait de la mise en série de $R_D$ et $C_{out}$.
+	Nous retrouvons ainsi un filtre RC composé de l'impédance de sortie et de la charge dont nous pouvons déterminer la fréquence de coupure :
+
+	$$f_{c_{out}}=\frac{1}{2\pi\cdot\left(R_{D}+R_{ch}\right)\cdot C_{out}}$$
+	% \item On a donc :
+	% 	$$v_{gs}=\frac{R_{b1}//R_{b2}}{\frac{1}{jC_{in}\omega}+R_{b1}//R_{b2}}v_{in}$$
+	% 	$$i_d=-g_m\cdot v_{gs} $$
+	% 	$$v_{out}=\frac{R_{ch}}{R_D+\frac{1}{jC_{out}\omega}+R_{ch}}\cdot i_d \cdot R_D$$
+	% 	Ce qui permet de conclure :
+	% 	$$v_{out}=-\frac{R_{ch}}{R_D+\frac{1}{jC_{out}\omega}+R_{ch}}\cdot R_D \cdot g_m\cdot\frac{R_{b1}//R_{b2}}{\frac{1}{jC_{in}\omega}+R_{b1}//R_{b2}}v_{in}$$
+\end{itemize}
+	
+\end{enumerate}
+
+}
+
+\Question{ Limites de linéarité.\\
+En considérant le gain du montage comme linéaire :
+\begin{itemize}
+\item Que vaut $V_{GS}$ ?
+\item Quelle est l'amplitude maximale possible sans écrêtage en sortie pour le point de fonctionnement choisi à la question précédente ?
+\item Quelle est la tension d'entrée correspondante ?
+\item Le comportement est-il symétrique autour du point de fonctionnement ?
+\item Que se passe-t-il si $V_{DC}$ change ?
+\item Bonus : en considérant l'écart entre les différentes courbe du faisceau $I_D=f(V_{ds})@V_{gs}=cste$, le montage peut-il être parfaitement linéaire ?
+\item Bonus : que se passe-t-il si la température du transistor change ?
+\item Bonus : comment améliorer cette linéarité ?
+\end{itemize} 
+}
+{
+\begin{itemize}
+\item pour le BS170, $V_{GS}=3.1V$ pour $g_m=0.197S$
+\item l'amplitude maximale en sortie vaut $4.34V$ (voir courbes en annexe).
+\item le gain du montage vaut $A=-g_m\cdot \left(R_D//R_{ch}\right)=-19.1$, par conséquent, pour $4.34V$ en sortie, l'amplitude de l'entrée vaut $0.23V$
+\item non
+\item si $V_{DC}$ change, alors $g_m$ change et donc le gain du montage change. Comme le point de fonctionnement sera différent, l'amplitude maximale en sortie changera également.
+\item non, plus $V_{GS}$ augmente, plus l'écart entre les courbes est grand, donc plus $g_m$ est grand. Il suffit de lire la courbe $g_m=f(V_{GS})$ pour le constater.
+\item si la température change, le $g_m$ et donc le gain du montage changera (pour un même $V_{GS}$), le courant de drain et donc $g_m$ seront différents.
+\item il suffit d'ajouter une résistance de source qui introduit une rétroaction négative qui stabilise les caractéristiques de cet amplificateur. 
+\end{itemize}
+}
+
+\section{Lecture de documentation~: extraction de paramètres}
+
+%Dans la section précédente, $g_m=0.1S$ a été imposé. Malheureusement, 
+\Question{
+\begin{itemize}
+\item Sachant que $I_D=42mA$, déterminer le $V_{GS}$ et le $g_m$ correspondant sur base des courbes du BS170 en annexe.
+\item Même question pour le BSL802SN avec $I_D=2A$.
+\end{itemize}
+}
+{
+\begin{itemize}
+\item pour $I_D=42mA$, $V_{GS}=2.96V$ et $g_m=165mS$
+\item pour $I_D=2A$, $V_{GS}=1.25V$ et $g_m(=g_{fs})=12.5S$
+\end{itemize}
+}
+
+\section{Dimensionnement d'un montage amplificateur}
+\Question{
+Dimensionner un étage à transistor MOS de gain à vide $32dB$. %
+%La fréquence de coupure à l'entrée doit être de maximum $123Hz$. 
+La tension d'alimentation vaut $24V$. Veillez à ne pas dépasser la puissance limite admissible par les transistors. La charge a une impédance supérieure à $3.3k\Omega$. Le signal à amplifier a une amplitude de $5mV$.
+Vous devez utiliser un BS170 dont les courbes caractéristiques sont en annexe et dont la puissance maximale dissipable est $P_D = 830 mW$.
+}{
+Un bon montage amplificateur utilisant un transistor est le classique montage à source commune.
+
+
+\begin{center}
+	\begin{circuitikz}[scale=1]\draw
+	(0,1) to [short,o-] (9,1)
+	(4,6) to [short] (9,6)
+	(0,3) node[anchor=east] {In} to [short,o-] (1,3)
+	(0,3) node[anchor=south]{} to [open, v_<=$V_{in}$] (0,1)
+	(1,3) to [C=$C_{in}$ ](1.5,3)
+	(1.5,3) to [short,-*] (2,3) node[anchor=south west]{}
+	(2,6) node[anchor=south ] (alim) {$E$}
+	(1.6,6) -- (2.4,6) %bar under the label
+	(2,3) to [R, l_=$R_{B1}$](2,6)
+	(2,3) to [R=$R_{B2}$](2,1)
+	(4,3) node[nfet] (mos) {}
+	(mos.G) to [short] (2,3)
+	(mos.D) to (4,4) to [R, l_=$R_D$] (4, 6)
+	(mos.D) to [short,-*](4,3.5) to [short] (4.25,3.5)
+	(mos.S) to [short] (4,1)% to [short, -o](2,0) node[anchor=west] {S}
+	(mos.S) -- (mos.B) %source to bulk connection
+	(4.25,3.5) node[anchor=south]{} to [C, l^=$C{out}$] (6,3.5) to [short](6,3.5)node[anchor=south]{} to [short,-o](6.5,3.5)node [anchor=south] {Out}
+	(6,3.5) to [generic, l_=$R_{ch}$] (6,1)
+	(6.5,3.5) to [open,v^<=$V_{out}$] (6.5,1)
+	(9,6) to [battery, l_=$E$](9,1)
+	(4,1) node[circ]{}
+	(4,1) node[ground]{}
+	;\end{circuitikz}
+
+\end{center}
+
+
+On doit réaliser un ampli de gain $32dB=\pm 40$. Avec un seul étage à source commune, le gain sera de $-40$.
+
+
+
+Commençons par trouver une contrainte sur la résistance de drain à l'aide de la puissance maximale que peut dissiper le transistor.
+Dans le cas du BS170, la fiche technique renseigne $P_D=830mW$.
+	
+	$$P_D=V_{DS}\cdot I_D = \left(E-R_D\cdot I_D \right)\cdot I_D$$
+	d'où : $$ P_D=E\cdot I_D - R_D \cdot {I_D}^2$$
+	
+	Le courant $I_D$ provoquant la plus grande dissipation d'énergie peut être trouvé par optimisation :
+	
+	$$\frac{\partial P_D}{\partial I_D}=0 \Longleftrightarrow E-2R_D \cdot {I_D}_{max} = 0$$
+	
+	$$\Longrightarrow {I_D}_{max}=\frac{E}{2R_D}$$
+
+	En injectant cette valeur dans l'expression $P_D(E, I_D, R_D)$, on trouve : 
+
+	$${P_D}_{max}=\frac{E^2}{4\cdot R_D}$$
+
+	Pour le BS170, si $E = 24 V$ et $P_D=830mW$ : \fbox{$R_D \geq 173\Omega$} %, donc ${I_D}_{Pmax}\leq 69mA$
+%	finalement : $$R_D=\frac{E^2}{4\cdot {P_D}_{max}}$$
+
+Prenons par exemple une résistance $R_D$ de $200 \Omega$.
+Sachant que le gain en boucle ouverte d'un montage à source commune $A_v = - g_m \cdot R_D$, on obtient \fbox{$g_m = 0.2 S$}.
+
+À partir de la caractéristique de transfert du BS170, on trouve pour la valeur de $g_m$ sélectionnée que $V_{GS} = 3.1 V$ et \fbox{$I_D = 67 mA$}.
+
+En utilisant l'expression de la droite de charge de ce même montage, $I_D = \frac{E - V_{DS}}{R_D}$, on peut trouver la valeur de polarisation de $V_{DS} = 10.6 V$.
+On vérifie ainsi que $P_D = V_{DS} \cdot I_D = 10.6 V \cdot 67 mA = 710 mW \leq 830 mW$.
+
+Il s'agit à présent de dimensionner $R_{B1}$ et $R_{B2}$ (si on a toujours la même topologie qu'à l'exercice~\ref{Q:ex4}) sachant que nous avons une alimentation $E = 24 V$ et qu'on souhaite atteindre $V_{GS} = 3.1 V$.
+Le rapport du diviseur résistif $\frac{R_{B2}}{R_{B1} + R_{B2}} = \frac{3.1}{24}$.
+En choisissant arbitrairement \fbox{$R_{B1} = 1 M\Omega$}, on obtient \fbox{$R_{B2} = 148 k\Omega$}.
+
+% En reprenant l'expression de la fréquence de coupure à l'entrée du montage $f_{c_{in}} = \frac{1}{2\pi\cdot\left(R_{b1}//R_{b2}\right)\cdot C_{in}} \leq 123 Hz$, on peut trouver \fbox{$C_{in} \geq 10 nF$}.
+
+Il nous reste deux éléments à vérifier pour confirmer le bon suivi du cahier des charges.
+Premièrement, l'impédance de sortie de notre montage $Z_{out} = R_D = 200 \Omega$ est bien au moins un ordre de grandeur plus faible que l'impédance de la charge ($3.3 k\Omega$), assurant une bonne adaptation d'impédance en tension.
+Enfin, l'amplitude de la tension d'entrée étant de $5 mV$ et le gain idéal de 40, la tension maximale en sortie sera de $200 mV$. Étant donné le point de fonctionnement ($I_D, V_{DS}$) suffisamment centré sur  la droite de charge, nous devrions pouvoir amplifier un signal sinusoïdal sans déformation.
+
+
+}
+
+\section{Dimensionnement d'un autre montage}
+\input{transistor.tex}
+%\newpage
+%\vspace*{-10cm}
+\appendix
+\vspace*{-3cm}
+\section{Caractéristiques}
+%\subsection{BS170}
+%\vspace*{-0.5cm}
+\subsection{Caractéristiques du transistor NMOS BS170}
+%\vspace{1cm}
+\label{anx:mos_doc}
+\begin{center}
+\ifthenelse{\boolean{corrige}}
+{\includegraphics[width=15cm]{carac_mos_2k16_corr-crop.pdf}\vspace*{-5cm}}%then
+{\includegraphics[width=16cm]{courbes_mos_2k16-crop.pdf}\vspace*{-5cm}}%else
+% les courbes ici sont ont été corrigée et sont cohérentes.
+\end{center}
+%\vspace*{-3cm}
+%\addcontentslinenono{toc}{section}{\href{http://pdf.datasheetcatalog.com/datasheets/70/123316_DS.pdf)}{\numberline{B}Documentation du transistor NMOS (lien cliquable)}}
+%{\href{http://pdf.datasheetcatalog.com/datasheets/70/123316_DS.pdf}{\attachfile[icon=Graph, color=0 0.75 1,description =Documentation du transistor NMOS BS 170 ]{./Documentation_BS170.pdf}}}
+%
+%TODO : ajouter liens vers doc
+%\vspace*{-2cm}
+%\newpage
+\subsection{BSL802SN}
+
+%\begin{center}
+\begin{center}
+\ifthenelse{\boolean{corrige}}
+{\includegraphics[width=15cm]{Infineon-BSL802SN-DS-v01_00-en_corr.pdf}}
+{\vspace{-1cm}
+\hspace{-1.5cm}\includegraphics[width=17cm,page=5]{Infineon-BSL802SN-DS-v01_00-en.pdf}}
+\end{center}
+%\end{center}
+\vspace{-4cm}
+% TODO : fancy header
+\end{document}
