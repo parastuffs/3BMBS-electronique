@@ -58,7 +58,7 @@ Chaque paire de cours devrait être suivie d'une séance d'exercices.
 	- Amplification
 	- Adaptation d'impédance
 	- Filtre actif
-	- Résistance négative
+	- Résistance négative (https://en.wikipedia.org/wiki/Negative_resistance)
 	- Redresseur de précision
 - Oscillateur (brièvement, fonctionnement du 555).
 
