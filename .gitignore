@@ -274,3 +274,21 @@ TSWLatexianTemp*
 
 # Makeindex log files
 *.lpz
+
+
+# Compiled files
+*Elec-3BS-3BM_exe_ADC-DAC.pdf
+*Elec-3BS-3BM_exe_aop.pdf
+*Elec-3BS-3BM_exe_BJT.pdf
+*Elec-3BS-3BM_exe_diodes.pdf
+*Elec-3BS-3BM_exe_MOSFET.pdf
+*Elec-3BS-3BM_labo1.pdf
+*Elec-3BS-3BM_labo2.pdf
+*Elec-3BS-3BM_labo3.pdf
+*correction.pdf
+*.gnuplot
+
+
+# Drawio temp files
+*.bkp
+*.dtmp
