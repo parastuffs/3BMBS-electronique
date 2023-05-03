@@ -27,7 +27,7 @@
 \usepackage{siunitx}
 \usepackage{tabularx}
 
-\newcommand{\version}{1.0.0}
+\newcommand{\version}{1.0.1}
 
 % \langexam{frenchb}
 
@@ -425,7 +425,7 @@ Entraînez-vous bien sur les deux types d'exercices !
         Quant à $I_+$ et $I_-$, ils se retrouvent dans les termes «~\textit{input offset current}~» (courant de décalage) qui vaut $I_+ - I_-$, et «~\textit{input bias current}~» (courant de polarisation) qui vaut $\frac{I_++I_-}{2}$.
         En solvant le système, on peut trouver que $I_+ = i_{bias} + \frac{i_{offset}}{2}$ et $I_- = i_{bias} - \frac{i_{offset}}{2}$.
 
-        Pour le LM741, on trouve $e_0$ = 1~mv, $I_+$ = 90~nA et $I_-$ = 70~nA, ce qui donne $V_{out} = 9.99 mV$.
+        Pour le LM741, on trouve $e_0$ = 1~mv, $I_+$ = 90~nA et $I_-$ = 70~nA, ce qui donne $V_{out} = 1.63 mV$.
 
         Pour le CA3140A, on trouve $e_0$ = 2~mv, $I_+$ = 10.25~pA et $I_-$ = 9.75~pA, ce qui donne $V_{out} = 20 mV$, l'influence des courants d'entrée sur la sortie est négligeable par rapport aux autres tensions du circuit.
 
@@ -516,7 +516,7 @@ Entraînez-vous bien sur les deux types d'exercices !
 \Question{%Ex labo 2, 3.1
 
     \begin{enumerate}
-        \item Dimensionnez un étage amplificateur inverseur à ampli-op ayant un gain à vide $A_v = 14 dB$ et une impédance d'entrée $R_{in} \geq 10 k\ohm$
+        \item Dimensionnez un étage amplificateur inverseur à ampli-op ayant un gain à vide $A_v = 14 dB$ et une impédance d'entrée $R_{in} \geq 10 k\ohm$, de sorte que la résistance $R_s$ de la source de tension est \textit{négligeable}.
 
         \item En supposant que l'ampli-op utilisé pour réaliser ce montage est un LM741, déterminez~:
         \begin{itemize}
@@ -534,9 +534,11 @@ Entraînez-vous bien sur les deux types d'exercices !
 
         \item Le produit gain-bande passante («~\textit{gain-bandwidth product}~», ou GBP en anglais) du LM741 étant de 1.5~MHz, la bande passante du montage vaut $\frac{GBP}{|A|} = 300 kHz$.
 
-        La tension de décalage se calcule de la même façon que dans l'exercice~\ref{q.tension-decalage}, à savoir $V_{out} = (1+\frac{R_2}{R_1})\cdot e_0 -(1+\frac{R_2}{R_1}) \cdot R_s \cdot I_+ + R_2 \cdot I_-$.
-        Cependant, dans le cas présent, la source $I_+$ est directment connectée à la masse et n'a donc aucune influence.
-        On obtient alors $V_{out} = 6\cdot e_0 + R_2 \cdot I_- = 33.5 mV$, puisqu'on a $e_0 = 1mV$ et $I_- = 70nA$.
+        La tension de décalage se calcule presque de la même façon que dans l'exercice~\ref{q.tension-decalage}, la différence étant que nous travaillons ici avec un montage \textit{inverseur}, donc la source de tension est connectée à la résistance de l'entrée inverseuse. Le courant de polarisation $I_+$ n'a donc aucune contribution.
+
+        Si $R_s$ n'était pas négligeable, $e_o$ verrait un montage non-inverseur avec $R_1$ et $R_s$ en série, soit un gain de $\left( 1 + \frac{R_2}{R_1 + R_s} \right)$. Cependant, nous faison l'hypothèse que $R_s \ll R_1$ afin de négliger $R_s$ dans cette expression.
+
+        On a donc $V_{out} = \left(1+\frac{R_2}{R_1}\right)\cdot e_0 + R_2 \cdot I_- = 6\cdot e_0 + R_2 \cdot I_- = 9.5 mV$, puisqu'on a $e_0 = 1mV$ et $I_- = 70nA$.
     \end{enumerate}
 }
 
