@@ -43,7 +43,7 @@
 %% fancy header & foot
 \pagestyle{fancy}
 \lhead{[EL3T] Électronique appliquée\\ Exercices : ADC-DAC}
-\rhead{v1.0.0\\ page \thepage}
+\rhead{v1.1.0\\ page \thepage}
 \chead{\ifthenelse{\boolean{corrige}}{Corrigé}{}}
 \cfoot{}
 %%
@@ -89,7 +89,7 @@ pdfsubject={ADC-DAC}
 \Question{
 	Le profil de quantification est l'écart entre le signal réel et sa conversion numérique au cours du temps.
 	Tracez le profil de quantification d'un convertisseur parfait pour le signal suivant.
-	Considérez un converstisseur dont la résolution en tension est de 0.5~V et dont le code change à 0.75 V, 1.25 V, 1.75 V, etc.
+	Considérez un converstisseur dont la résolution en tension est de 0.5~V et donc le code change à 0.75 V, 1.25 V, 1.75 V, etc.
 
 	Commencez par tracer la sortie du convertisseur dans le même repère.
 
@@ -99,8 +99,9 @@ pdfsubject={ADC-DAC}
 
 }
 {
+	La convention utilisée est qu'une erreur de $+\Delta/2$ correspond au fait que la conversion numérique est trop grande par rapport au signal analogique. C'est pour cette raison que le profil de quantification commence à 0 (entrée et sortie superposées) et descend vers $-\Delta/2$.
 	\begin{center}
-		\includegraphics[width=.7\textwidth]{profil-quatification-conv-profil.pdf}
+		\includegraphics[width=.7\textwidth]{profil-quatification-conv-corr.jpg}
 	\end{center}
 }
 
@@ -112,7 +113,11 @@ pdfsubject={ADC-DAC}
 
 }
 {
-	On obtient la séquence 100, 110, 111, 110, 100, 010, 000, 001, 011, 101, 110, 111.
+	Avec une tension de référence de 8 V et un ADC sur 3 bits, on a une résolution de $8V/2^3 = 1 V$. Les valeurs comprises entre 0 et 1 V correspondent au code 000, entre 1 V et 2 V au code 001, ..., entre 7 V et 8 V au code 111.
+	La conversion survient à chaque flanc montant du signal périodique \textit{Sampling pulses}.
+
+	Les tensions correspondantes au instants d'échantillonage sont (en volts) : 3.8, 6.2, 7, 6.6, 4.6, 2, 0.8, 1.4, 3.3, 5.5, 6.6, 7.5.
+	On obtient donc la séquence 011, 110, 111, 110, 100, 010, 000, 001, 011, 101, 110, 111.
 }
 
 \Question{
@@ -130,12 +135,19 @@ pdfsubject={ADC-DAC}
 
 }
 {
+	Si le bit $D_0$ est à 5 V et les autres à 0 V, on obtient $V_{out} = -0.25 V$ via le montage inverseur créé par les résistances de 200$k\Omega$ et de 10$k\Omega$. De la même manière, $D_1$ donne -0.5 V, $D_2$ donne -1V et $D_3$ donne -2 V.
 
+	Le chronogramme de droite donne la suite de codes binaires suivante (dans l'ordre $D_3D_2D_1D_0$) : 0101, 0010, 0010, 0000, 0101, 1111, 1010, 1000.
+	Cette suite correspond aux tensions continues (en volts) : -1.25, -0.5, -0.5, 0, -1.25, -3.75, -2.5, -2.
+	
+	\begin{center}
+		\includegraphics[width=.6\textwidth]{DAC-conv-corrige.pdf}
+	\end{center}
 }
 
 \Question{
 	Vous souhaitez analyser la consommation électrique de votre réseau domestique en temps réel. Pour ce faire, vous allez utiliser une pince ampèremétrique de 1000:1 (1 A devient 1 mA) reliée à un ADC (alimenté en 5 V) via une résistance de shunt de $1 \Omega$ (1 A devient 1 V).
-	Sachant que votre disjoncteur principal supporte 32 A et que vous voulez mesurer jusqu'à une puissance de 1 mW, quelle devrait être la résolution de votre ADC ?
+	Sachant que votre disjoncteur principal supporte 32 A et que vous voulez mesurer jusqu'à une puissance de 1 W, quelle devrait être la résolution de votre ADC ?
 
 	Critiquez le résultat obtenu.
 }
@@ -145,7 +157,7 @@ pdfsubject={ADC-DAC}
 
 	Notre disjoncteur pouvant supporter 32 A maximum, nous avons une puissance maximale sur notre réseau de $7360 W$.
 
-	Une puissance de 1 mW correspondrait alors à un courant de 4.35 mA. Étant donné le rapport 1000:1 de la pince, ce courant correspond à $4.35\mu V$ à l'entrée de l'ADC.
+	Une puissance de 1 W correspondrait alors à un courant de 4.35 mA. Étant donné le rapport 1000:1 de la pince, ce courant correspond à $4.35\mu V$ à l'entrée de l'ADC.
 	La tension \textit{full scale} de ce dernier étant de 5 V, nous avons une résolution $5 \cdot 1/2^n-1 = 4.35 \cdot 10^{-6} \Leftrightarrow  n = \log_2(\frac{5}{4.35 \cdot 10^{-6}}+1) = 20.13$. En arrondissant vers le haut, on obtient qu'il faut un ADC de 21 bits. Pour prendre en compte le bruit du signal, il vaudra sans doute mieux prendre un ADC de 24 bits.
 
 	Cependant, notre réseau ne devrait pas s'approcher des limites de notre disjoncteur. On serait sans aucun doute à moins de 80\% du maximum si le réseau est correctement dimensionné.
