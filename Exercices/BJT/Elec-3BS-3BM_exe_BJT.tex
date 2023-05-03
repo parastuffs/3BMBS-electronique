@@ -28,7 +28,7 @@
 \usepackage{mathastext} % math as standfard text : units are respecting typography conventions.
 \usepackage{siunitx}
 
-\newcommand{\version}{1.0.0}
+\newcommand{\version}{1.0.1}
 
 % \langexam{frenchb}
 
@@ -78,7 +78,7 @@ pdfsubject={BJT}
 \Question{
     Donnez les courants et tensions de chaque branche des montages suivants, en supposant que $V_{BE} = 0.7 V$ et que $I_B \ll I_C$.
     \begin{center}
-        \includegraphics[width=.9\textwidth]{NPN-a.pdf}
+        \includegraphics[width=.6\textwidth]{NPN-a.pdf}
     \end{center}
 }
 {
@@ -94,16 +94,6 @@ De gauche à droite :
     De plus, toujours si $I_B$ est négligeable, la chute de potentiel sur la résistance connectée à la base est négligeable et $V_{BE} = V_{CE} = 0.7 V$.
 
     On a alors $10 V - I_R \cdot 10 k\Omega - V_{CE} - I_E \cdot 10 k\Omega + 10 V = 0$. Puisque $I_E = I_C$ et $I_R = I_C$ : $I_C = 965 \mu A$.
-
-    \item Puisqu'on néglige $I_B$, le courant circule uniquement dans les deux résistances de gauche : $I_R = \frac{20V}{480k\Omega} = 41.7\mu A$. $V_B = 10V - 300k\Omega \cdot I_R = -2.5 V$.
-
-    $V_E = V_B - V_{BE} = -3.21 V$
-
-    $V_E - I_E\cdot 10k\Omega + 10 V = 0 \Leftrightarrow I_E = 679 \mu A$
-
-    Puisque $I_B \ll I_C$, on a $I_C \approx I_E$.
-
-    $10 V - I_C\cdot 10k\Omega - V_{CE} - I_E \cdot 10k\Omega + 10 V = 0 \Leftrightarrow V_{CE} = 6.42 V$
 \end{enumerate}
 }
 
