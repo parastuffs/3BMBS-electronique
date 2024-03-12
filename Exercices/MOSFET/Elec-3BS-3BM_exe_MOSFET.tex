@@ -43,7 +43,7 @@
 %% fancy header & foot
 \pagestyle{fancy}
 \lhead{[EL3T] Électronique appliquée\\ Exercices : MOSFET}
-\rhead{v1.0.1\\ page \thepage}
+\rhead{v1.0.2\\ page \thepage}
 \chead{\ifthenelse{\boolean{corrige}}{Corrigé}{}}
 \cfoot{}
 %%
@@ -396,7 +396,7 @@ Soit le circuit suivant :
 	Étant donné que $V_S = 0 V$, nous pouvons utiliser la caractéristique de \textbf{transfert} du transistor pour déterminer $I_D$ sachant que $V_{GS} = 3.1 V$. On lit ainsi que $I_D = 67 mA$.
 
 	Passons ensuite à la partie droite du montage.
-	Puisque $C_{out}$ est un circuit ouvert pour les grandeurs continues, nous n'avons qu'une seule et unique maille dont l'équation est $E = R_D \cdot I_D - V_{DS}$, soit $V_{DS} = 5.3 V$.
+	Puisque $C_{out}$ est un circuit ouvert pour les grandeurs continues, nous n'avons qu'une seule et unique maille dont l'équation est $E = R_D \cdot I_D + V_{DS}$, soit $V_{DS} = 5.3 V$.
 
 	
 	}
