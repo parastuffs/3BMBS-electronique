@@ -56,7 +56,7 @@
 
 \pagestyle{fancy}
 \lhead{[AE3T] Laboratoire d'électronique appliquée\\ Labo 3~: Transistor MOS\ifthenelse{\boolean{corrige}}{~-- corrigé}{}}
-\rhead{v1.0.1\\ page \thepage}
+\rhead{v1.0.2\\ page \thepage}
 \cfoot{}
 %%
 
@@ -237,7 +237,8 @@ Indiquez dans quelle zone fonctionne le transistor sur cette droite de charge.
 Déduisez-en l'amplitude maximale possible en sortie pour le point de fonctionnement choisi.
 \label{Q:Q9}
 }{
-	Un point de fonctionnement judicieux se trouvera dans la zone « passante » du transistor, c'est-à-dire sur la caractéristique de transfert, lorsque l'abscisse est une tension supérieure à la tension de seuil, mais inférieur à la saturation du courant $I_D$.
+	Un point de fonctionnement judicieux se trouvera dans la zone de pincement de la caractéristique de sortie du transistor, la zone ohmique provoquant une déformation du signal de sortie. Cette caractéristique est composée de deux zones : la zone ohmique lorsque $I_D$ varie avec $V_{DS}$, et la zone de pincement lorsque $I_D$ est constant. La frontière entre ces deux zones prend la forme d'une parabole d'équation $I_D = \frac{K}{2} \cdot (V_{DS})^2$.
+	Un point de fonctionnement maximisant l'amplitude de la tension en sortie du montage se trouvera au centre de la partie de la droite de charge se trouvant dans la zone de pincement.
 }
 
 % \clearpage
@@ -250,7 +251,7 @@ Déduisez-en l'amplitude maximale possible en sortie pour le point de fonctionne
 %        ##  ##   ##    ##                 ##         ##     ##  ##       ##  
 % ##     ##  ##    ##   ##     ##          ##     ##  ##     ##  ##       ##  
 %  #######   ##     ##   #######            #######     #####    ##       ##  
-\section{Amplifier avec un montage en source commune}
+\section{Amplification avec un montage en source commune}
 
 La partie précédente permet de conclure que l'amplification est possible avec un transistor MOS. Nous allons donc construire un montage amplificateur autour du transistor.
 
