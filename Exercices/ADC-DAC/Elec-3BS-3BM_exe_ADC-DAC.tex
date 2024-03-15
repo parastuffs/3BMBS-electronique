@@ -43,7 +43,7 @@
 %% fancy header & foot
 \pagestyle{fancy}
 \lhead{[EL3T] Électronique appliquée\\ Exercices : ADC-DAC}
-\rhead{v1.1.0\\ page \thepage}
+\rhead{v1.2.0\\ page \thepage}
 \chead{\ifthenelse{\boolean{corrige}}{Corrigé}{}}
 \cfoot{}
 %%
@@ -99,9 +99,9 @@ pdfsubject={ADC-DAC}
 
 }
 {
-	La convention utilisée est qu'une erreur de $+\Delta/2$ correspond au fait que la conversion numérique est trop grande par rapport au signal analogique. C'est pour cette raison que le profil de quantification commence à 0 (entrée et sortie superposées) et descend vers $-\Delta/2$.
+	La convention utilisée est qu'une erreur de $+\Delta/2$ correspond au fait que le signal analogique est plus grand que la code numérique équivalent. C'est pour cette raison que le profil de quantification commence à 0 (entrée et sortie superposées) et descend vers $-\Delta/2$.
 	\begin{center}
-		\includegraphics[width=.7\textwidth]{profil-quatification-conv-corr.jpg}
+		\includegraphics[width=.7\textwidth]{Screenshot_20240315_101108.png}
 	\end{center}
 }
 
@@ -158,7 +158,7 @@ pdfsubject={ADC-DAC}
 	Notre disjoncteur pouvant supporter 32 A maximum, nous avons une puissance maximale sur notre réseau de $7360 W$.
 
 	Une puissance de 1 W correspondrait alors à un courant de 4.35 mA. Étant donné le rapport 1000:1 de la pince, ce courant correspond à $4.35\mu V$ à l'entrée de l'ADC.
-	La tension \textit{full scale} de ce dernier étant de 5 V, nous avons une résolution $5 \cdot 1/2^n-1 = 4.35 \cdot 10^{-6} \Leftrightarrow  n = \log_2(\frac{5}{4.35 \cdot 10^{-6}}+1) = 20.13$. En arrondissant vers le haut, on obtient qu'il faut un ADC de 21 bits. Pour prendre en compte le bruit du signal, il vaudra sans doute mieux prendre un ADC de 24 bits.
+	La tension \textit{full scale} de ce dernier étant de 5 V, nous avons une résolution $5 \cdot 1/2^n = 4.35 \cdot 10^{-6} \Leftrightarrow  n = \log_2(\frac{5}{4.35 \cdot 10^{-6}}) = 20.13$. En arrondissant vers le haut, on obtient qu'il faut un ADC de 21 bits. Pour prendre en compte le bruit du signal, il vaudra sans doute mieux prendre un ADC de 24 bits.
 
 	Cependant, notre réseau ne devrait pas s'approcher des limites de notre disjoncteur. On serait sans aucun doute à moins de 80\% du maximum si le réseau est correctement dimensionné.
 	De plus, la puissance maximale actuelle du réseau, $7360 W$ correspond à une tension de $32 mV$ à l'entrée de l'ADC. En supposant une résolution de $4.35\mu V$, cette tension correspond à un code binaire $(32 mV/4.35\mu V)_{10} = (1110010111101)_2$, ce qui signifie qu'il ne faut que 13 bits pour représenter notre valeur maximale. Si nous avons effectivement sélectionné un ADC de 21 bits, les 8 bits de poids forts ne seront jamais utilisés et donc gâchés.
@@ -170,7 +170,7 @@ pdfsubject={ADC-DAC}
 	\begin{enumerate}
 		\item Quelle est sa résolution ?
 		\item Quelles sont ses erreurs ?
-		\item Si la tension de référence est de 2.5 V, quelle plage de tension est représentée par 1 LSB ?
+		\item Si la tension de référence (FSR) est de 2.5 V, quelle plage de tension est représentée par 1 LSB ?
 	\end{enumerate}
 
 }
@@ -183,7 +183,7 @@ pdfsubject={ADC-DAC}
 			\item Offset : $\pm$ 1 LSB
 			\item Gain : $\pm$ 2 LSB
 		\end{itemize}
-		\item 1 LSB = $\frac{V_{REF}}{2^n-1} = 0.0098 V$
+		\item 1 LSB = $\frac{V_{REF}}{2^n} = 0.0098 V$
 	\end{enumerate}
 }
 
